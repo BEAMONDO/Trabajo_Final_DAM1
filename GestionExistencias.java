@@ -1,9 +1,7 @@
-// Creado y pensado por David Beamonde Salinas
+// Creado y pensado por BEAMONDO
 //
 // Para evitar el plagio, el codigo se encuentra publico:
 // https://github.com/BEAMONDO/Trabajo_Final_DAM1
-//
-// Hecho con ayuda de https://chat.openai.com/
 //
 import javax.persistence.*;
 import javax.swing.*;
