@@ -377,6 +377,9 @@ public class GestionExistencias extends JFrame {
     private void rellenarCampos(){
         JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
     }
+    private void rellenarCamposEditar(){
+      JOptionPane.showMessageDialog(this, "Por favor, rellena la cantidad, el precio o los dos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+    }
     private void cantidadYPrecioIncorrecto(){
         JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para la cantidad y para el precio.", "Cantidad o Precio Incorrecto", JOptionPane.WARNING_MESSAGE);    
     }
@@ -462,11 +465,11 @@ public class GestionExistencias extends JFrame {
         String nuevoPrecioStr = ppueditf.getText(); // Recoger el nuevo precio unitario desde el campo ppueditf
         
         if (materialSeleccionado == null) {
-            rellenarCampos();
+          rellenarCamposEditar();
             return;
         }
         if (cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) {
-            rellenarCampos();
+          rellenarCamposEditar();
             return;
         }
         try {
@@ -492,6 +495,10 @@ public class GestionExistencias extends JFrame {
             
             if (cantidadStr.isEmpty() && !nuevoPrecioStr.isEmpty()) {
                 double nuevoPrecio = Double.parseDouble(nuevoPrecioStr);
+                if(nuevoPrecio < 0){
+                  precioIncorrecto();
+                  return;
+                }
                 materialDAO.editarMaterial3(materialSeleccionado, nuevoPrecio);
                 ppueditf.setText(""); // Limpiar el campo de precio unitario después de la edición
                 agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nuevo precio por unidad: " + nuevoPrecio + ".");
@@ -501,6 +508,10 @@ public class GestionExistencias extends JFrame {
 
             if (!cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) {
                 int nuevaCantidad = Integer.parseInt(cantidadStr);
+                if(nuevaCantidad < 0){
+                  cantidadIncorrecto();
+                  return;
+                }
                 materialDAO.editarMaterial2(materialSeleccionado, nuevaCantidad);
                 ceditf.setText(""); // Limpiar el campo de cantidad después de la edición
                 agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nueva cantidad: " + nuevaCantidad + ".");
@@ -547,10 +558,6 @@ public class GestionExistencias extends JFrame {
                 JOptionPane.showMessageDialog(this, "No puedes retirar más cantidad de la que tienes.");
                 return;
             }
-            if (cantidadBorrar <= 0) {
-                cantidadIncorrecto();
-                return;
-            }
             materialDAO.retirarMaterial(materialSeleccionado, cantidadBorrar);
             cbf.setText("");
             agregarTextoHMF("A " + materialSeleccionado + " se le han retirado " + cantidad + ".");
@@ -567,7 +574,7 @@ public class GestionExistencias extends JFrame {
     private void eliminarMaterial() {
         Material materialSeleccionado = (Material) nef.getSelectedItem();
         if (materialSeleccionado == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un material.", "Cantidad Incorrecta", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un material.", "Material Incorrecto", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int opcion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar " + materialSeleccionado.getNombre() + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
