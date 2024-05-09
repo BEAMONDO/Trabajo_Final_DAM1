@@ -1,6 +1,9 @@
+// Para que se vean las imagenes hay que cambiar la ruta
+// de las imagenes, se encuentran en la linea 35 y 40
+//
 // Creado y pensado por BEAMONDO
 //
-// Para evitar el plagio, el codigo se encuentra publico:
+// El codigo se encuentra publico aqui:
 // https://github.com/BEAMONDO/Trabajo_Final_DAM1
 
 import javax.persistence.*;
