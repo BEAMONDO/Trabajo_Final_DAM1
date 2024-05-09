@@ -1,36 +1,45 @@
-// Creado y pensado por David Beamonde Salinas
+// Creado y pensado por BEAMONDO
 //
 // Para evitar el plagio, el codigo se encuentra publico:
 // https://github.com/BEAMONDO/Trabajo_Final_DAM1
-//
-// Hecho con ayuda de https://chat.openai.com/
-//
+
 import javax.persistence.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
-public class GestionExistencias extends JFrame {
+public class GestionExistencias extends JFrame 
+{
     private EntityManagerFactory emf;
     private EntityManager em;
     private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf;
     private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb;
     private JTextArea hmf, etf;
-    private JMenuItem existencias, historial, cerrar;
+    private JMenuItem ex, hi, ce;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private MaterialDAO materialDAO;
 
-    public static void main(String args[]) {
+    public static void main(String args[]) 
+    {
         GestionExistencias aplicacion = new GestionExistencias();
+        aplicacion.setVisible(true);
     }
 
-    public GestionExistencias() {
+    public GestionExistencias() 
+    {
         // Establecer imagen de fondo
-        BackgroundPanel backgroundPanel = new BackgroundPanel("/home/david/eclipse-workspace/Pruebas_Trabajo_Final/src/fondo.jpg");
-        backgroundPanel.setLayout(null);
-        setContentPane(backgroundPanel);
-        // Mamar a la clase MaterialDAO
+        Imagenes fondo = new Imagenes("/home/alumno/eclipse-workspace/Trabajo_Final_Programacion/fondo.jpg");
+        fondo.setLayout(null);
+        setContentPane(fondo);
+
+        // Cargar imagen de informacion
+        ImageIcon iconoOriginal = new ImageIcon("/home/alumno/eclipse-workspace/Trabajo_Final_Programacion/info.png");
+        Image imagenOriginal = iconoOriginal.getImage(); 
+        Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
+        ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
+
+        // Llamar a la clase MaterialDAO
         materialDAO = new MaterialDAO();
 //---------------------------------------- Menu superior ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
@@ -41,29 +50,23 @@ public class GestionExistencias extends JFrame {
         JMenu menuOpciones = new JMenu("Opciones");
         menuOpciones.setMnemonic('O'); // Letra distinguida
         // Agregar elementos al menú
-        menuOpciones.add(historial = new JMenuItem("Borrar el historial", 'B'));
-        menuOpciones.add(existencias = new JMenuItem("Eliminar todas las existencias", 'E'));
+        menuOpciones.add(hi = new JMenuItem("Borrar el historial", 'B'));
+        menuOpciones.add(ex = new JMenuItem("Eliminar todas las existencias", 'E'));
         jmb.add(menuOpciones);
 
         JMenu exitMenu = new JMenu("Salir");
         exitMenu.setMnemonic('S');
         jmb.add(exitMenu);
-        exitMenu.add(cerrar = new JMenuItem("Cerrar", 'C'));
+        exitMenu.add(ce = new JMenuItem("Cerrar", 'C'));
 
         //Agregar actionListener a los elementos del menú
-        historial.addActionListener(new BorrarHistorialMenu());
-        existencias.addActionListener(new EliminarExistenciasMenu());
-        cerrar.addActionListener(new CerrarMenu());
+        hi.addActionListener(new BorrarHistorialMenu());
+        ex.addActionListener(new EliminarExistenciasMenu());
+        ce.addActionListener(new CerrarMenu());
 //---------------------------------------- Hasta aqui ----------------------------------------
 
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-        // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("/home/david/eclipse-workspace/Pruebas_Trabajo_Final/src/info.png");
-        Image imagenOriginal = iconoOriginal.getImage(); 
-        Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
-        ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
-
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
         setTitle("Gestión de Existencias - by DBSueños");
         setLayout(null);
@@ -79,129 +82,129 @@ public class GestionExistencias extends JFrame {
         add(new JLabel("Registrar material: ")).setBounds(60, 40, largoTextos, altoCampos); // Establecer tamaño
         JLabel ir = new JLabel(iconoReescalado); // Crear y configurar el JLabel para mostrar la imagen reescalada
         ir.setBounds(240, 40, 20, 20); // Establecer posición y tamaño de la imagen
-        backgroundPanel.add(ir); // Agregar la imagen
+        fondo.add(ir); // Agregar la imagen
         add(new JLabel("Nombre: ")).setBounds(60, 80, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         nrf = new JTextField(); // Crear un campo
         nrf.setBounds(130, 80, 150, altoCampos); // Establecer posición y tamaño
-        backgroundPanel.add(nrf); // Agregarlo
+        fondo.add(nrf); // Agregarlo
         add(new JLabel("Cantidad: ")).setBounds(60, 120, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         crf = new JTextField(); // Crear un campo
         crf.setBounds(150, 120, 130, altoCampos);  // Establecer posición y tamaño
-        backgroundPanel.add(crf); // Agregarlo
+        fondo.add(crf); // Agregarlo
         add(new JLabel("Precio unidad: ")).setBounds(60, 160, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         ppurf = new JTextField(); // Crear un campo
         ppurf.setBounds(170, 160, 110, altoCampos); // Establecer posición y tamaño
-        backgroundPanel.add(ppurf); // Agregarlo
+        fondo.add(ppurf); // Agregarlo
         rb = new JButton("Registrar"); // Crear un botón
         rb.setBounds(120, alturaBoton, largoBoton, altoCampos); // Establecer posición y tamaño
-        backgroundPanel.add(rb); // Agregarlo
+        fondo.add(rb); // Agregarlo
 
         add(new JLabel("Añadir material: ")).setBounds(340, 40, largoTextos, altoCampos);
         JLabel ia = new JLabel(iconoReescalado);
         ia.setBounds(520, 40, 20, 20);
-        backgroundPanel.add(ia);
+        fondo.add(ia);
         add(new JLabel("Nombre: ")).setBounds(340, 80, largoTextos, altoCampos);
         naf = new JComboBox<>(); // Crear lista de almacen de elementos registrados
         naf.setBounds(410, 80, 150, altoCampos);
-        backgroundPanel.add(naf);
+        fondo.add(naf);
         add(new JLabel("Cantidad: ")).setBounds(340, 120, largoTextos, altoCampos);
         caf = new JTextField();
         caf.setBounds(430, 120, 130, altoCampos);
-        backgroundPanel.add(caf);
+        fondo.add(caf);
         ab = new JButton("Añadir");
         ab.setBounds(400, alturaBoton, largoBoton, altoCampos);
-        backgroundPanel.add(ab);
+        fondo.add(ab);
 
         add(new JLabel("Editar material: ")).setBounds(620, 40, largoTextos, 25);
         JLabel iedit = new JLabel(iconoReescalado);
         iedit.setBounds(800, 40, 20, 20);
-        backgroundPanel.add(iedit);
+        fondo.add(iedit);
         add(new JLabel("Nombre: ")).setBounds(620, 80, largoTextos, altoCampos);
         neditf = new JComboBox<>();
         neditf.setBounds(690, 80, 150, altoCampos);
-        backgroundPanel.add(neditf);
+        fondo.add(neditf);
         add(new JLabel("Cantidad: ")).setBounds(620, 120, largoTextos, altoCampos);
         ceditf = new JTextField();
         ceditf.setBounds(710, 120, 130, altoCampos);
-        backgroundPanel.add(ceditf);
+        fondo.add(ceditf);
         add(new JLabel("Precio unidad: ")).setBounds(620, 160, largoTextos, altoCampos);
         ppueditf = new JTextField();
         ppueditf.setBounds(730, 160, 110, altoCampos);
-        backgroundPanel.add(ppueditf);
+        fondo.add(ppueditf);
         editb = new JButton("Editar");
         editb.setBounds(680, alturaBoton, largoBoton, altoCampos);
-        backgroundPanel.add(editb);
+        fondo.add(editb);
 
         add(new JLabel("Retirar material: ")).setBounds(60, 280, largoTextos, 25);
         JLabel ib = new JLabel(iconoReescalado); 
         ib.setBounds(240, 280, 20, 20);
-        backgroundPanel.add(ib);
+        fondo.add(ib);
         add(new JLabel("Nombre: ")).setBounds(60, 320, largoTextos, altoCampos);
         nbf = new JComboBox<>();
         nbf.setBounds(130, 320, 150, altoCampos);
-        backgroundPanel.add(nbf);
+        fondo.add(nbf);
         add(new JLabel("Cantidad: ")).setBounds(60, 360, largoTextos, altoCampos);
         cbf = new JTextField();
         cbf.setBounds(150, 360, 130, altoCampos);
-        backgroundPanel.add(cbf);
+        fondo.add(cbf);
         bb = new JButton("Retirar");
         bb.setBounds(120, alturaBoton2, largoBoton, altoCampos);
-        backgroundPanel.add(bb);
+        fondo.add(bb);
 
         add(new JLabel("Eliminar material: ")).setBounds(340, 280, largoTextos, altoCampos);
         JLabel ie = new JLabel(iconoReescalado); 
         ie.setBounds(520, 280, 20, 20);
-        backgroundPanel.add(ie);
+        fondo.add(ie);
         add(new JLabel("Nombre: ")).setBounds(340, 320, largoTextos, altoCampos);
         nef = new JComboBox<>();
         nef.setBounds(410, 320, 150, altoCampos);
-        backgroundPanel.add(nef);
+        fondo.add(nef);
         eb = new JButton("Eliminar");
         eb.setBounds(400, alturaBoton2, largoBoton, altoCampos);
-        backgroundPanel.add(eb);
+        fondo.add(eb);
 
         add(new JLabel("Modificar nombre: ")).setBounds(620, 280, largoTextos, altoCampos);
         JLabel im = new JLabel(iconoReescalado); 
         im.setBounds(800, 280, 20, 20);
-        backgroundPanel.add(im);
+        fondo.add(im);
         add(new JLabel("Actual: ")).setBounds(620, 320, largoTextos, altoCampos);
         nof = new JComboBox<>();
         nof.setBounds(690, 320, 150, altoCampos);
-        backgroundPanel.add(nof);
+        fondo.add(nof);
         add(new JLabel("Nuevo: ")).setBounds(620, 360, largoTextos, altoCampos);
         ncf = new JTextField();
         ncf.setBounds(690, 360, 150, altoCampos);
-        backgroundPanel.add(ncf);
+        fondo.add(ncf);
         ncb = new JButton("Modificar");
         ncb.setBounds(680, alturaBoton2, largoBoton, altoCampos);
-        backgroundPanel.add(ncb);
+        fondo.add(ncb);
 
         // Crear area de texto
         add(new JLabel("Historial de modificaciones: ")).setBounds(60, 500, largoTextos, altoCampos);
         JLabel ihm = new JLabel(iconoReescalado);
         ihm.setBounds(300, 500, 20, 20);
-        backgroundPanel.add(ihm);
+        fondo.add(ihm);
         hmf = new JTextArea(); // Crear un area
         hmf.setEditable(false); // Que no sea editable
         JScrollPane scrollPane = new JScrollPane(hmf); // Añadir scroll
         scrollPane.setBounds(60, 540, 780, 160); // Establecer posición y tamaño
-        backgroundPanel.add(scrollPane); // Agregarlo
+        fondo.add(scrollPane); // Agregarlo
         bhb = new JButton("Borrar el historial");
         bhb.setBounds(350, 500, largoBoton+80, altoCampos);
-        backgroundPanel.add(bhb);
+        fondo.add(bhb);
         eteb = new JButton("Eliminar todas las existencias");
         eteb.setBounds(590, 500, largoBoton+150, altoCampos);
-        //backgroundPanel.add(eteb);
+        //fondo.add(eteb);
 
         add(new JLabel("Existencias disponibles: ")).setBounds(920, 40, largoTextos, altoCampos);
         JLabel ied = new JLabel(iconoReescalado);
         ied.setBounds(1140, 40, 20, 20);
-        backgroundPanel.add(ied);
+        fondo.add(ied);
         etf = new JTextArea();
         etf.setEditable(false);
         JScrollPane scrollPane2 = new JScrollPane(etf);
         scrollPane2.setBounds(920, 80, 250, 620);
-        backgroundPanel.add(scrollPane2);
+        fondo.add(scrollPane2);
 
         // Configuración de ObjectDB
         emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
@@ -214,100 +217,132 @@ public class GestionExistencias extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar al cerrar la ventana
         // Actualizar
         actualizarComboBoxMateriales(); // Actualizar el JComboBox
-        actualizarTextoETF(); // Actualizar el JTextArea
+        actualizarTextoETF(); // Actualizar el JTextArea de existencias
 //---------------------------------------- Hasta aqui ----------------------------------------
 
 //---------------------------------------- Configuracion de botones ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Que ocurre al pulsar cada botón
-        rb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        rb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 registrarMaterial();
             }
         });
-        ab.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        ab.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 agregarMaterial();
             }
         });
-        bb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        bb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 retirarMaterial();
             }
         });
-        eb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        eb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 eliminarMaterial();
             }
         });
-        editb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        editb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 editarMaterial();
             }
         });
-        ncb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        ncb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 modificarNombre();
             }
         });
-        bhb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        bhb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 borrarHistorial();
             }
         });
-        eteb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        eteb.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
                 borrarTodasExistencias();
             }
         });
 
         // Agregar un MouseListener al JLabel para detectar clics
-        ir.addMouseListener(new MouseAdapter() {
+        ir.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 // Mostrar ventana de información al hacer clic en la imagen
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras registrar.\n- Cada vez que registras un producto, aparecerá en la lista\nde existencias disponibles situada a la derecha.\n- En la zona inferior se mostrará un mensaje de registro.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        ia.addMouseListener(new MouseAdapter() {
+        ia.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras añadir de cada producto.\n- Cada vez que añadas una cantidad, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de añadido.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        iedit.addMouseListener(new MouseAdapter() {
+        iedit.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras editar.\n- Cada vez que editas una cantidad o precio, se actualiza\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de edición.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        ib.addMouseListener(new MouseAdapter() {
+        ib.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras retirar de cada producto.\n- Cada vez que retiras una cantidad, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de retirada.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        ie.addMouseListener(new MouseAdapter() {
+        ie.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre del producto que quieras eliminar.\n- Cada vez que eliminas un producto, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de eliminación.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        im.addMouseListener(new MouseAdapter() {
+        im.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Introduce el nombre actual y el nuevo nombre del producto que\nquieras cambiar el nombre.\n- Cada vez que cambias el nombre de un producto, se actualiza\ninmediatamente en la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de modificación.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        ihm.addMouseListener(new MouseAdapter() {
+        ihm.addMouseListener(new MouseAdapter()
+         {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e)
+             {
                 JOptionPane.showMessageDialog(null, "- Aqui aparecen todas las modificaciones realizadas desde que\nse ha iniciado la aplicacion.\n- Cada vez que hagas algún cambio se actualiza inmediatamente.\n- Al cerrar la aplicacion el historial se borra automaticamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        ied.addMouseListener(new MouseAdapter() {
+        ied.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) 
+            {
                 JOptionPane.showMessageDialog(null, "- Aqui aparecen todas las existencias disponibles.\n- Cada vez que se realice un cambio se actualiza inmediatamente.\n- Al cerrar la aplicacion las existencias se guardan automaticamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -317,21 +352,26 @@ public class GestionExistencias extends JFrame {
 //---------------------------------------- Funciones extra ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     // Agregar modificaciones al area de historial de modificaciones
-    private void agregarTextoHMF(String texto) {
+    private void agregarTextoHMF(String texto) 
+    {
         hmf.append(texto + "\n");
     }
 
     // Agregar materiales existentes al area de existencias disponibles
-    private void agregarTextoETF(String texto) {
+    private void agregarTextoETF(String texto) 
+    {
         etf.append(texto + "\n");
     }
 
-    private void actualizarTextoETF() {
+    // Actualizar el JTextArea con la lista de existencias
+    private void actualizarTextoETF() 
+    {
         TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m ORDER BY m.nombre ASC", Material.class);
         List<Material> existencias = query.getResultList();
         etf.setText(""); // Borrar el contenido actual de etf
         // Escribir todos los materiales existentes
-        for (Material material : existencias) {
+        for (Material material : existencias) 
+        {
             agregarTextoETF("  Nombre: " + material.nombre);
             agregarTextoETF("  Cantidad: " + material.cantidad);
             agregarTextoETF("  Precio por unidad: " + material.precioUnidad);
@@ -341,7 +381,8 @@ public class GestionExistencias extends JFrame {
     }
 
     // Actualizar todos los JComboBox con los materiales existentes
-    private void actualizarComboBoxMateriales() {
+    private void actualizarComboBoxMateriales() 
+    {
         em.getTransaction().begin();
         TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m", Material.class);
         List<Material> resultados = query.getResultList();
@@ -353,7 +394,8 @@ public class GestionExistencias extends JFrame {
         neditf.removeAllItems();
         nof.removeAllItems();
         // Agregar materiales al JComboBox
-        for (Material material : resultados) {
+        for (Material material : resultados) 
+        {
             naf.addItem(material);
             nbf.addItem(material);
             nef.addItem(material);
@@ -363,55 +405,66 @@ public class GestionExistencias extends JFrame {
     }
 
     // Borrar el historial de modificaciones
-    private void borrarHistorial() {
+    private void borrarHistorial() 
+    {
         // Mostrar ventana de confirmación
         int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas borrar el historial?", "Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Verificar la opción seleccionada por el usuario
-        if (opcion == JOptionPane.YES_OPTION) {
-            // Si el usuario elige "Sí", borrar el historial
+        if (opcion == JOptionPane.YES_OPTION) 
+        {
             hmf.setText("");
         }
     }
 
-    // Funciones con texto generico para que no haya mensajes diferentes
-    private void rellenarCampos(){
+    // Funciones con texto generico para facilitar la modificacion de los mensajes
+    private void rellenarCampos()
+    {
         JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
     }
-    private void rellenarCamposEditar(){
-      JOptionPane.showMessageDialog(this, "Por favor, rellena la cantidad, el precio o los dos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+    private void rellenarCamposEditar()
+    {
+        JOptionPane.showMessageDialog(this, "Por favor, rellena la cantidad, el precio o los dos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
     }
-    private void cantidadYPrecioIncorrecto(){
+    private void cantidadYPrecioIncorrecto()
+    {
         JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para la cantidad y para el precio.", "Cantidad o Precio Incorrecto", JOptionPane.WARNING_MESSAGE);    
     }
-    private void cantidadIncorrecto(){
+    private void cantidadIncorrecto()
+    {
         JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para la cantidad.", "Cantidad Incorrecta", JOptionPane.WARNING_MESSAGE);
     }
-    private void precioIncorrecto(){
+    private void precioIncorrecto()
+    {
         JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para el precio.", "Precio Incorrecto", JOptionPane.WARNING_MESSAGE);
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
 //---------------------------------------- Funcion registrar material ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void registrarMaterial() {
+    private void registrarMaterial() 
+    {
         String nombre = nrf.getText();
         String cantidad = crf.getText();
         String precioUnidadStr = ppurf.getText();
-        if (cantidad.isEmpty() || precioUnidadStr.isEmpty()) {
+        if (cantidad.isEmpty() || precioUnidadStr.isEmpty()) 
+        {
             rellenarCampos();
             return;
         }
-        try {
+        try 
+        {
             int cantidadAnnadir = Integer.parseInt(cantidad);
             double precioUnidadRegistrar = Double.parseDouble(precioUnidadStr);
-            if (cantidadAnnadir < 0 || precioUnidadRegistrar <= 0) {
+            if (cantidadAnnadir < 0 || precioUnidadRegistrar < 0) 
+            {
                 cantidadYPrecioIncorrecto();
                 return;
             }
             TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
             query.setParameter("nombre", nombre);
             List<Material> results = query.getResultList();
-            if (!results.isEmpty()) {
+            if (!results.isEmpty()) 
+            {
                 JOptionPane.showMessageDialog(this, "El material ya existe.");
                 return;
             }
@@ -423,7 +476,9 @@ public class GestionExistencias extends JFrame {
             actualizarComboBoxMateriales(); // Actualizar el JComboBox después de registrar el material
             agregarTextoHMF("Se ha registrado " + nombre + " con una cantidad de " + cantidadAnnadir + " y un valor de " + precioUnidadStr + " por cada unidad.");
             actualizarTextoETF();
-        } catch (NumberFormatException e) {
+        } 
+        catch (NumberFormatException e) 
+        {
             cantidadYPrecioIncorrecto();
             return;
         }
@@ -432,16 +487,20 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion agregar material ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void agregarMaterial() {
+    private void agregarMaterial() 
+    {
         Material materialSeleccionado = (Material) naf.getSelectedItem();
         String cantidad = caf.getText();
-        if (materialSeleccionado == null || cantidad.isEmpty()) {
+        if (materialSeleccionado == null || cantidad.isEmpty()) 
+        {
             rellenarCampos();
             return;
         }
-        try {
+        try 
+        {
             int cantidadAnnadir = Integer.parseInt(cantidad);
-            if (cantidadAnnadir <= 0) {
+            if (cantidadAnnadir <= 0) 
+            {
                 cantidadIncorrecto();
                 return;
             }
@@ -450,7 +509,9 @@ public class GestionExistencias extends JFrame {
             caf.setText("");
             agregarTextoHMF("A " + materialSeleccionado + " se le han añadido " + cantidad + ".");
             actualizarTextoETF();
-        } catch (NumberFormatException e) {
+        } 
+        catch (NumberFormatException e) 
+        {
             cantidadIncorrecto();
             return;
         }
@@ -459,79 +520,97 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion editar material ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void editarMaterial() {
+    private void editarMaterial() 
+    {
         Material materialSeleccionado = (Material) neditf.getSelectedItem();
         String cantidadStr = ceditf.getText();    
-        String nuevoPrecioStr = ppueditf.getText(); // Recoger el nuevo precio unitario desde el campo ppueditf
+        String nuevoPrecioStr = ppueditf.getText();
         
-        if (materialSeleccionado == null) {
-          rellenarCamposEditar();
+        if (materialSeleccionado == null) 
+        {
+            rellenarCamposEditar();
             return;
         }
-        if (cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) {
-          rellenarCamposEditar();
+        if (cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) 
+        {
+            rellenarCamposEditar();
             return;
         }
-        try {
+        try 
+        {
             // Verificar si la cantidad no es un número
-            if (!cantidadStr.isEmpty()) {
-                try {
+            if (!cantidadStr.isEmpty()) 
+            {
+                try 
+                {
                     Integer.parseInt(cantidadStr);
-                } catch (NumberFormatException e) {
+                } 
+                catch (NumberFormatException e) 
+                {
                     cantidadIncorrecto();
                     return;
                 }
             }
 
             // Verificar si el nuevo precio no es un número
-            if (!nuevoPrecioStr.isEmpty()) {
+            if (!nuevoPrecioStr.isEmpty()) 
+            {
                 try {
                     Double.parseDouble(nuevoPrecioStr);
-                } catch (NumberFormatException e) {
+                } 
+                catch (NumberFormatException e) 
+                {
                     precioIncorrecto();
                     return;
                 }
             }
             
-            if (cantidadStr.isEmpty() && !nuevoPrecioStr.isEmpty()) {
+            if (cantidadStr.isEmpty() && !nuevoPrecioStr.isEmpty()) 
+            {
                 double nuevoPrecio = Double.parseDouble(nuevoPrecioStr);
-                if(nuevoPrecio < 0){
-                  precioIncorrecto();
-                  return;
+                if(nuevoPrecio < 0)
+                {
+                    precioIncorrecto();
+                    return;
                 }
                 materialDAO.editarMaterial3(materialSeleccionado, nuevoPrecio);
-                ppueditf.setText(""); // Limpiar el campo de precio unitario después de la edición
+                ppueditf.setText("");
                 agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nuevo precio por unidad: " + nuevoPrecio + ".");
                 actualizarTextoETF();
                 return;
             }
 
-            if (!cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) {
+            if (!cantidadStr.isEmpty() && nuevoPrecioStr.isEmpty()) 
+            {
                 int nuevaCantidad = Integer.parseInt(cantidadStr);
-                if(nuevaCantidad < 0){
-                  cantidadIncorrecto();
-                  return;
+                if(nuevaCantidad < 0)
+                {
+                    cantidadIncorrecto();
+                    return;
                 }
                 materialDAO.editarMaterial2(materialSeleccionado, nuevaCantidad);
-                ceditf.setText(""); // Limpiar el campo de cantidad después de la edición
+                ceditf.setText("");
                 agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nueva cantidad: " + nuevaCantidad + ".");
                 actualizarTextoETF();
                 return;
             }
 
             int nuevaCantidad = Integer.parseInt(cantidadStr);
-            double nuevoPrecio = Double.parseDouble(nuevoPrecioStr); // Convertir el nuevo precio a double
-            if (nuevaCantidad <= 0 || nuevoPrecio <= 0) {
+            double nuevoPrecio = Double.parseDouble(nuevoPrecioStr);
+            if (nuevaCantidad < 0 || nuevoPrecio < 0) 
+            {
                 cantidadYPrecioIncorrecto();
                 return;
             }
             
             materialDAO.editarMaterial(materialSeleccionado, nuevaCantidad, nuevoPrecio);
-            ceditf.setText(""); // Limpiar el campo de cantidad después de la edición
-            ppueditf.setText(""); // Limpiar el campo de precio unitario después de la edición
+            ceditf.setText("");
+            ppueditf.setText("");
             agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nueva cantidad: " + nuevaCantidad + ", nuevo precio por unidad: " + nuevoPrecio + ".");
             actualizarTextoETF();
-        } catch (NumberFormatException e) {
+        } 
+        catch (NumberFormatException e) 
+        {
             cantidadYPrecioIncorrecto();
             return;
         }
@@ -541,20 +620,25 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion borrar material ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void retirarMaterial() {
+    private void retirarMaterial() 
+    {
         Material materialSeleccionado = (Material) nbf.getSelectedItem();
         String cantidad = cbf.getText();
-        if (materialSeleccionado == null || cantidad.isEmpty()) {
+        if (materialSeleccionado == null || cantidad.isEmpty()) 
+        {
             rellenarCampos();
             return;
         }
-        try{
+        try
+        {
             int cantidadBorrar = Integer.parseInt(cantidad);
-            if (cantidadBorrar <= 0) {
+            if (cantidadBorrar <= 0) 
+            {
                 cantidadIncorrecto();
                 return;
             }
-            if (cantidadBorrar > materialSeleccionado.cantidad) {
+            if (cantidadBorrar > materialSeleccionado.cantidad) 
+            {
                 JOptionPane.showMessageDialog(this, "No puedes retirar más cantidad de la que tienes.");
                 return;
             }
@@ -562,7 +646,9 @@ public class GestionExistencias extends JFrame {
             cbf.setText("");
             agregarTextoHMF("A " + materialSeleccionado + " se le han retirado " + cantidad + ".");
             actualizarTextoETF();
-        } catch (NumberFormatException e) {
+        } 
+        catch (NumberFormatException e) 
+        {
             cantidadIncorrecto();
             return;
         }
@@ -571,14 +657,17 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion eliminar material ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void eliminarMaterial() {
+    private void eliminarMaterial() 
+    {
         Material materialSeleccionado = (Material) nef.getSelectedItem();
-        if (materialSeleccionado == null) {
+        if (materialSeleccionado == null) 
+        {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un material.", "Material Incorrecto", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int opcion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar " + materialSeleccionado.getNombre() + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (opcion == JOptionPane.YES_OPTION) {
+        if (opcion == JOptionPane.YES_OPTION) 
+        {
             materialDAO.eliminarMaterial(materialSeleccionado);
             actualizarComboBoxMateriales();
             agregarTextoHMF("Se ha eliminado " + materialSeleccionado + " con una cantidad de " + materialSeleccionado.getCantidad() + " y un valor de " + materialSeleccionado.getPrecioUnidad() + ".");
@@ -589,10 +678,12 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion cambiar nombre ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void modificarNombre() {
+    private void modificarNombre() 
+    {
         Material materialSeleccionado = (Material) nof.getSelectedItem();
         String nuevoNombre = ncf.getText();
-        if (materialSeleccionado == null || nuevoNombre.isEmpty()) {
+        if (materialSeleccionado == null || nuevoNombre.isEmpty()) 
+        {
             rellenarCampos();
             return;
         }
@@ -600,16 +691,15 @@ public class GestionExistencias extends JFrame {
         TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(m) FROM Material m WHERE m.nombre = :nombre", Long.class);
         countQuery.setParameter("nombre", nuevoNombre);
         long count = countQuery.getSingleResult();
-        if (count > 0) {
+        if (count > 0) 
+        {
             JOptionPane.showMessageDialog(this, "El nombre '" + nuevoNombre + "' ya está en uso.", "Nombre duplicado", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String nombreAnterior = materialSeleccionado.getNombre(); // Guardar el nombre anterior
         materialDAO.nuevoNombre(materialSeleccionado, nuevoNombre);
-        ncf.setText(""); // Limpiar el campo de nuevo nombre
-        // Actualizar el JComboBox
+        ncf.setText("");
         actualizarComboBoxMateriales();
-        // Actualizar el JTextArea
         agregarTextoHMF("Se ha modificado el nombre del material " + nombreAnterior + " a " + nuevoNombre + ".");
         actualizarTextoETF();
     }
@@ -617,11 +707,13 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Funcion borrar todo existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void borrarTodasExistencias() {
+    private void borrarTodasExistencias() 
+    {
         // Crear la ventana de confirmación
         int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar todas las existencias?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Verificar la opción seleccionada
-        if (opcion == JOptionPane.YES_OPTION) {
+        if (opcion == JOptionPane.YES_OPTION) 
+        {
             em.getTransaction().begin();
             em.createQuery("DELETE FROM Material").executeUpdate();
             em.getTransaction().commit();
@@ -635,13 +727,13 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Menu salir/cerrar ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    class CerrarMenu implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            String actionCommand = e.getActionCommand();
-            if(e.getSource() instanceof JMenuItem) {
-                if("Cerrar".equals(actionCommand)) {
-                    System.exit(0);
-                }
+    class CerrarMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                System.exit(0);
             }
         }
     }
@@ -649,13 +741,13 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Menu opcciones/eliminar todas las existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    class EliminarExistenciasMenu implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            String actionCommand = e.getActionCommand();
-            if(e.getSource() instanceof JMenuItem) {
-                if("Eliminar todas las existencias".equals(actionCommand)) {
-                    borrarTodasExistencias();
-                }
+    class EliminarExistenciasMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                borrarTodasExistencias();
             }
         }
     }
@@ -663,15 +755,15 @@ public class GestionExistencias extends JFrame {
 
 //---------------------------------------- Menu opcciones/eliminar todas las existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-class BorrarHistorialMenu implements ActionListener {
-    public void actionPerformed(ActionEvent e) {
-        String actionCommand = e.getActionCommand();
-        if(e.getSource() instanceof JMenuItem) {
-            if("Borrar el historial".equals(actionCommand)) {
+    class BorrarHistorialMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
                 borrarHistorial();
             }
         }
     }
-}
 //---------------------------------------- Hasta aqui ----------------------------------------
 }
