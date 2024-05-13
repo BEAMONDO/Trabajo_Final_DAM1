@@ -1,5 +1,5 @@
 // Para que se vean las imagenes hay que cambiar la ruta
-// de las imagenes, se encuentran en la linea 39 y 44
+// de las imagenes, se encuentran en la linea 38 y 43
 //
 // Creado y pensado por BEAMONDO
 //
@@ -10,10 +10,7 @@ import javax.persistence.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class GestionExistencias extends JFrame 
@@ -26,6 +23,8 @@ public class GestionExistencias extends JFrame
     private JMenuItem ex, hi, ce;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
+    Connection conexionMySQL = null;
+    Statement sentenciaMySQL = null;
 
     public static void main(String args[]) 
     {
@@ -36,16 +35,27 @@ public class GestionExistencias extends JFrame
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("/home/david/eclipse-workspace/Pruebas_Trabajo_Final/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("/home/alumno//eclipse-workspace/Trabajo_Final_Programacion/imagenes/fondo.jpg");
         fondo.setLayout(null);
         setContentPane(fondo);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("/home/david/eclipse-workspace/Pruebas_Trabajo_Final/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("/home/alumno//eclipse-workspace/Trabajo_Final_Programacion/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
 
+        try 
+        {
+            // Conexión a MySQL
+            System.out.println("Conectando a la base de datos MySQL...");
+            conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            System.out.println("Se ha conectado correctamente.");
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("ERROR al conectar con la base de datos MySQL: \n" + e.getMessage());
+        }
 //---------------------------------------- Menu superior ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Crear una barra de menú        
@@ -56,7 +66,8 @@ public class GestionExistencias extends JFrame
         menuOpciones.setMnemonic('O'); // Letra distinguida
         // Agregar elementos al menú
         menuOpciones.add(hi = new JMenuItem("Borrar el historial", 'B'));
-        menuOpciones.add(ex = new JMenuItem("Eliminar todas las existencias", 'E'));
+        menuOpciones.addSeparator();
+        menuOpciones.add(ex = new JMenuItem("Eliminar todos los materiales", 'E'));
         jmb.add(menuOpciones);
 
         JMenu exitMenu = new JMenu("Salir");
@@ -197,11 +208,11 @@ public class GestionExistencias extends JFrame
         bhb = new JButton("Borrar el historial");
         bhb.setBounds(350, 500, largoBoton+80, altoCampos);
         fondo.add(bhb);
-        eteb = new JButton("Eliminar todas las existencias");
+        eteb = new JButton("Eliminar todos los materiales");
         eteb.setBounds(590, 500, largoBoton+150, altoCampos);
         //fondo.add(eteb);
 
-        add(new JLabel("Existencias disponibles: ")).setBounds(920, 40, largoTextos, altoCampos);
+        add(new JLabel("Materiales disponibles: ")).setBounds(920, 40, largoTextos, altoCampos);
         JLabel ied = new JLabel(iconoReescalado);
         ied.setBounds(1140, 40, 20, 20);
         fondo.add(ied);
@@ -293,7 +304,7 @@ public class GestionExistencias extends JFrame
             public void mouseClicked(MouseEvent e) 
             {
                 // Mostrar ventana de información al hacer clic en la imagen
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras registrar.\n- Cada vez que registras un producto, aparecerá en la lista\nde existencias disponibles situada a la derecha.\n- En la zona inferior se mostrará un mensaje de registro.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras registrar.\n- Cada vez que registras un producto, aparecerá en la lista\nde materiales disponibles situada a la derecha.\n- En la zona inferior se mostrará un mensaje de registro.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         ia.addMouseListener(new MouseAdapter() 
@@ -301,7 +312,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras añadir de cada producto.\n- Cada vez que añadas una cantidad, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de añadido.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras añadir de cada producto.\n- Cada vez que añadas una cantidad, se actualiza inmediatamente\nen la lista de materiales disponibles.\n- En la zona inferior se mostrará un mensaje de añadido.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         iedit.addMouseListener(new MouseAdapter() 
@@ -309,7 +320,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras editar.\n- Cada vez que editas una cantidad o precio, se actualiza\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de edición.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre, la cantidad y el precio por unidad de\ncada producto que quieras editar.\n- Cada vez que editas una cantidad o precio, se actualiza\nen la lista de materiales disponibles.\n- En la zona inferior se mostrará un mensaje de edición.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         ib.addMouseListener(new MouseAdapter() 
@@ -317,7 +328,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras retirar de cada producto.\n- Cada vez que retiras una cantidad, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de retirada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre y la cantidad quieras retirar de cada producto.\n- Cada vez que retiras una cantidad, se actualiza inmediatamente\nen la lista de materiales disponibles.\n- En la zona inferior se mostrará un mensaje de retirada.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         ie.addMouseListener(new MouseAdapter() 
@@ -325,7 +336,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre del producto que quieras eliminar.\n- Cada vez que eliminas un producto, se actualiza inmediatamente\nen la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de eliminación.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre del producto que quieras eliminar.\n- Cada vez que eliminas un producto, se actualiza inmediatamente\nen la lista de materiales disponibles.\n- En la zona inferior se mostrará un mensaje de eliminación.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         im.addMouseListener(new MouseAdapter() 
@@ -333,7 +344,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Introduce el nombre actual y el nuevo nombre del producto que\nquieras cambiar el nombre.\n- Cada vez que cambias el nombre de un producto, se actualiza\ninmediatamente en la lista de existencias disponibles.\n- En la zona inferior se mostrará un mensaje de modificación.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre actual y el nuevo nombre del producto que\nquieras cambiar el nombre.\n- Cada vez que cambias el nombre de un producto, se actualiza\ninmediatamente en la lista de materiales disponibles.\n- En la zona inferior se mostrará un mensaje de modificación.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         ihm.addMouseListener(new MouseAdapter()
@@ -349,7 +360,7 @@ public class GestionExistencias extends JFrame
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "- Aqui aparecen todas las existencias disponibles.\n- Cada vez que se realice un cambio se actualiza inmediatamente.\n- Al cerrar la aplicacion las existencias se guardan automaticamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "- Aqui aparecen todos los materiales disponibles.\n- Cada vez que se realice un cambio se actualiza inmediatamente.\n- Al cerrar la aplicacion los materiales se guardan automaticamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }
@@ -480,7 +491,8 @@ public class GestionExistencias extends JFrame
             em.getTransaction().commit();
 
             // Crear tabla MySQL
-            try{
+            try
+            {
                 //Abrir la conexión
                 Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
 
@@ -506,7 +518,7 @@ public class GestionExistencias extends JFrame
             crf.setText("");
             ppurf.setText("");
             actualizarComboBoxMateriales(); // Actualizar el JComboBox después de registrar el material
-            agregarTextoHMF("Se ha registrado " + nombre + " con una cantidad de " + cantidadAnnadir + " y un valor de " + precioUnidadStr + " por cada unidad.");
+            agregarTextoHMF("Nuevo material: " + nombre + ", Nueva cantidad: " + cantidadAnnadir + ", Nuevo precio: " + precioUnidadStr + "€ por cada unidad.");
             actualizarTextoETF();
         } 
         catch (NumberFormatException e) 
@@ -547,7 +559,7 @@ public class GestionExistencias extends JFrame
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
             caf.setText("");
-            agregarTextoHMF("A " + materialSeleccionado + " se le han añadido " + cantidad + ".");
+            agregarTextoHMF("Al material " + materialSeleccionado + " se le ha agregado una cantidad de " + cantidad + ". Nueva cantidad: " + materialExistente.getCantidad() + ".");
             actualizarTextoETF();
         } 
         catch (NumberFormatException e) 
@@ -595,7 +607,8 @@ public class GestionExistencias extends JFrame
             // Verificar si el nuevo precio no es un número
             if (!nuevoPrecioStr.isEmpty()) 
             {
-                try {
+                try 
+                {
                     Double.parseDouble(nuevoPrecioStr);
                 } 
                 catch (NumberFormatException e) 
@@ -623,7 +636,7 @@ public class GestionExistencias extends JFrame
                 em.getTransaction().commit();
                 transferirMaterialesObjectDBtoMySQL();
                 ppueditf.setText("");
-                agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nuevo precio por unidad: " + nuevoPrecio + ".");
+                agregarTextoHMF("El material " + materialSeleccionado.getNombre() + " ha sido editado. Nuevo precio: " + nuevoPrecio + "€ por cada unidad.");
                 actualizarTextoETF();
                 return;
             }
@@ -646,7 +659,7 @@ public class GestionExistencias extends JFrame
                 em.getTransaction().commit();
                 transferirMaterialesObjectDBtoMySQL();
                 ceditf.setText("");
-                agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nueva cantidad: " + nuevaCantidad + ".");
+                agregarTextoHMF("El material " + materialSeleccionado.getNombre() + " ha sido editado. Nueva cantidad: " + nuevaCantidad + ".");
                 actualizarTextoETF();
                 return;
             }
@@ -670,7 +683,7 @@ public class GestionExistencias extends JFrame
             transferirMaterialesObjectDBtoMySQL();
             ceditf.setText("");
             ppueditf.setText("");
-            agregarTextoHMF("Se ha editado el material " + materialSeleccionado.getNombre() + ". Nueva cantidad: " + nuevaCantidad + ", nuevo precio por unidad: " + nuevoPrecio + ".");
+            agregarTextoHMF("El material " + materialSeleccionado.getNombre() + " ha sido editado. Nueva cantidad: " + nuevaCantidad + ", Nuevo precio: " + nuevoPrecio + "€ por cada unidad.");
             actualizarTextoETF();
         } 
         catch (NumberFormatException e) 
@@ -711,12 +724,12 @@ public class GestionExistencias extends JFrame
             TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
             List<Material> resultados = query.getResultList();
-            Material material = resultados.get(0);
-            material.setCantidad(material.getCantidad() - cantidadBorrar);
+            Material materialexistente = resultados.get(0);
+            materialexistente.setCantidad(materialexistente.getCantidad() - cantidadBorrar);
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
             cbf.setText("");
-            agregarTextoHMF("A " + materialSeleccionado + " se le han retirado " + cantidad + ".");
+            agregarTextoHMF("Al material " + materialSeleccionado + " se le ha retirado una cantidad de " + cantidad + ". Nueva cantidad: " + materialexistente.getCantidad() + ".");
             actualizarTextoETF();
         } 
         catch (NumberFormatException e) 
@@ -745,12 +758,12 @@ public class GestionExistencias extends JFrame
             TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
             List<Material> resultados = query.getResultList();
-            Material material = resultados.get(0);
-            em.remove(material);
+            Material materialexistente = resultados.get(0);
+            em.remove(materialexistente);
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
             actualizarComboBoxMateriales();
-            agregarTextoHMF("Se ha eliminado " + materialSeleccionado + " con una cantidad de " + materialSeleccionado.getCantidad() + " y un valor de " + materialSeleccionado.getPrecioUnidad() + ".");
+            agregarTextoHMF("Se ha eliminado el material " + materialSeleccionado + " con una cantidad de " + materialSeleccionado.getCantidad() + " y un valor de " + materialSeleccionado.getPrecioUnidad() + ".");
             actualizarTextoETF();
         }
     }
@@ -788,7 +801,7 @@ public class GestionExistencias extends JFrame
         transferirMaterialesObjectDBtoMySQL();
         ncf.setText("");
         actualizarComboBoxMateriales();
-        agregarTextoHMF("Se ha modificado el nombre del material " + nombreAnterior + " a " + nuevoNombre + ".");
+        agregarTextoHMF("Se ha modificado el nombre del material " + nombreAnterior + ", Nuevo nombre: " + nuevoNombre + ".");
         actualizarTextoETF();
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
@@ -798,7 +811,7 @@ public class GestionExistencias extends JFrame
     private void borrarTodasExistencias() 
     {
         // Crear la ventana de confirmación
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar todas las existencias?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar todos los materiales?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Verificar la opción seleccionada
         if (opcion == JOptionPane.YES_OPTION) 
         {
@@ -809,7 +822,7 @@ public class GestionExistencias extends JFrame
             hmf.setText("");
             actualizarComboBoxMateriales();
             actualizarTextoETF();
-            JOptionPane.showMessageDialog(null, "Se han borrado todas las existencias.");
+            JOptionPane.showMessageDialog(null, "Se han borrado todos los materiales.");
         }
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
@@ -818,52 +831,36 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
 
     @SuppressWarnings("unchecked")
-    private void transferirMaterialesObjectDBtoMySQL() {
+    private void transferirMaterialesObjectDBtoMySQL() 
+    {
         // Variables para la conexión a ObjectDB
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
         EntityManager em = emf.createEntityManager();
         
-        Connection conexionMySQL = null;
-        Statement sentenciaMySQL = null;
-        
-        try {
+        try 
+        {
             // Conexión a MySQL
             conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
             
-            //int materialeseliminados = 0; // Contador de materiales eliminados
             // Eliminacion de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
             String sqlDelete = "DELETE FROM materiales";
             sentenciaMySQL.executeUpdate(sqlDelete);
-            //int filasAfectadasDelete = sentenciaMySQL.executeUpdate(sqlDelete);
-            /*if (filasAfectadasDelete > 0) {
-                materialeseliminados++;
-            }*/
-            //System.out.println("Se eliminaron " + materialeseliminados + " materiales de MySQL.");
 
             // Consulta de materiales en ObjectDB
             Query consulta = em.createQuery("SELECT m FROM Material m", Material.class);
             List<Material> materiales = consulta.getResultList();
-            //System.out.println("Se encontraron " + materiales.size() + " materiales en ObjectDB:");
-            /*for (Material material : materiales) {
-                System.out.println(material);
-            }*/
-            
-            //int materialesTransferidos = 0; // Contador de materiales transferidos
+
             // Inserción de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
-            for (Material material : materiales) {
+            for (Material material : materiales) 
+            {
                 String nombre = material.getNombre();
                 int cantidad = material.getCantidad();
                 double precioUnidad = material.getPrecioUnidad();
                 String sqlInsert = "INSERT INTO materiales (nombre, cantidad, precioUnidad) VALUES ('" +
-                                    nombre + "', " + cantidad + ", " + precioUnidad + ")";
+                            nombre + "', " + cantidad + ", " + precioUnidad + ")";
                 sentenciaMySQL.executeUpdate(sqlInsert);
-                //int filasAfectadasInsert = sentenciaMySQL.executeUpdate(sqlInsert);
-                // Incrementar el contador si la inserción fue exitosa
-                /*if (filasAfectadasInsert > 0) {
-                    materialesTransferidos++;
-                }*/
             }
             
             sentenciaMySQL.close();
@@ -872,7 +869,9 @@ public class GestionExistencias extends JFrame
             emf.close();
 
             //System.out.println("Se transfirieron " + materialesTransferidos + " materiales de ObjectDB a MySQL.");
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             System.out.println("ERROR al conectar con la base de datos MySQL: \n\n" + e.getMessage());
         }
     }
