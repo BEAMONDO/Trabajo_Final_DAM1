@@ -692,7 +692,6 @@ public class GestionExistencias extends JFrame
             return;
         }
     }
-
 //---------------------------------------- Hasta aqui ----------------------------------------
 
 //---------------------------------------- Funcion borrar material ----------------------------------------
@@ -829,7 +828,6 @@ public class GestionExistencias extends JFrame
 
 //---------------------------------------- Funcion transferir datos de ObjectDB a MySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-
     @SuppressWarnings("unchecked")
     private void transferirMaterialesObjectDBtoMySQL() 
     {
