@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.sql.*;
 import java.util.List;
 
@@ -18,13 +19,12 @@ public class GestionExistencias extends JFrame
     private EntityManagerFactory emf;
     private EntityManager em;
     private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf;
-    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb;
+    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, BOTONPRUEBAS;
     private JTextArea hmf, etf;
     private JMenuItem ex, hi, ce;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
-    Connection conexionMySQL = null;
-    Statement sentenciaMySQL = null;
+    private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
 
     public static void main(String args[]) 
     {
@@ -35,25 +35,25 @@ public class GestionExistencias extends JFrame
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("/home/alumno//eclipse-workspace/Trabajo_Final_Programacion/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
         fondo.setLayout(null);
         setContentPane(fondo);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("/home/alumno//eclipse-workspace/Trabajo_Final_Programacion/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
 
-        try 
+        try{
+            //Abrir la conexión
+            System.out.println("Conectando con la base de datos MySQL...");
+            DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            System.out.println("Conexion establecida.");
+        }
+        catch (SQLException e)
         {
-            // Conexión a MySQL
-            System.out.println("Conectando a la base de datos MySQL...");
-            conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
-            System.out.println("Se ha conectado correctamente.");
-        } 
-        catch (SQLException e) 
-        {
+            //e.printStackTrace();
             System.out.println("ERROR al conectar con la base de datos MySQL: \n" + e.getMessage());
         }
 //---------------------------------------- Menu superior ----------------------------------------
@@ -61,6 +61,7 @@ public class GestionExistencias extends JFrame
         // Crear una barra de menú        
         JMenuBar jmb = new JMenuBar();
         setJMenuBar(jmb);
+
         // Crear un menú
         JMenu menuOpciones = new JMenu("Opciones");
         menuOpciones.setMnemonic('O'); // Letra distinguida
@@ -72,14 +73,39 @@ public class GestionExistencias extends JFrame
 
         JMenu exitMenu = new JMenu("Salir");
         exitMenu.setMnemonic('S');
-        jmb.add(exitMenu);
         exitMenu.add(ce = new JMenuItem("Cerrar", 'C'));
+        jmb.add(exitMenu);
 
         //Agregar actionListener a los elementos del menú
         hi.addActionListener(new BorrarHistorialMenu());
         ex.addActionListener(new EliminarExistenciasMenu());
         ce.addActionListener(new CerrarMenu());
 //---------------------------------------- Hasta aqui ----------------------------------------
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        JMenuItem seguridad;
+        menuOpciones.addSeparator();
+        menuOpciones.add(seguridad = new JMenuItem("Copia de seguridad", 'C'));
+        //seguridad.addActionListener(new CopiaSeguridadMenu());
+        BOTONPRUEBAS = new JButton("BOTON PARA PRUEBAS");
+        BOTONPRUEBAS.setBounds(590, 500, 250, 25);
+        fondo.add(BOTONPRUEBAS);
+        BOTONPRUEBAS.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
+                //copiaSeguridadMySQL();
+                //transferirMaterialesObjectDBtoTXT();
+                //transferirMaterialesMySQLtoTXT();
+                //cargarMaterialesTXTtoMySQL();
+                //cargarMaterialesTXTtoObjectDB();
+            }
+        });
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
@@ -491,8 +517,7 @@ public class GestionExistencias extends JFrame
             em.getTransaction().commit();
 
             // Crear tabla MySQL
-            try
-            {
+            try{
                 //Abrir la conexión
                 Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
 
@@ -509,7 +534,7 @@ public class GestionExistencias extends JFrame
             catch (SQLException e)
             {
                 //e.printStackTrace();
-                System.out.println("ERROR al conectar con la base de datos MySQL: \n\n" + e.getMessage());
+                //System.out.println("ERROR al crear la tabla materiales en MySQL: \n" + e.getMessage());
             }
 
             // Transferir materiales de ObjectDB a MySQL
@@ -607,8 +632,7 @@ public class GestionExistencias extends JFrame
             // Verificar si el nuevo precio no es un número
             if (!nuevoPrecioStr.isEmpty()) 
             {
-                try 
-                {
+                try {
                     Double.parseDouble(nuevoPrecioStr);
                 } 
                 catch (NumberFormatException e) 
@@ -829,13 +853,16 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Funcion transferir datos de ObjectDB a MySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     @SuppressWarnings("unchecked")
-    private void transferirMaterialesObjectDBtoMySQL() 
+    private void transferirMaterialesObjectDBtoMySQL()
     {
         // Variables para la conexión a ObjectDB
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
         EntityManager em = emf.createEntityManager();
         
-        try 
+        Connection conexionMySQL = null;
+        Statement sentenciaMySQL = null;
+        
+        try
         {
             // Conexión a MySQL
             conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
@@ -851,13 +878,13 @@ public class GestionExistencias extends JFrame
 
             // Inserción de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
-            for (Material material : materiales) 
+            for (Material material : materiales)
             {
                 String nombre = material.getNombre();
                 int cantidad = material.getCantidad();
                 double precioUnidad = material.getPrecioUnidad();
                 String sqlInsert = "INSERT INTO materiales (nombre, cantidad, precioUnidad) VALUES ('" +
-                            nombre + "', " + cantidad + ", " + precioUnidad + ")";
+                                    nombre + "', " + cantidad + ", " + precioUnidad + ")";
                 sentenciaMySQL.executeUpdate(sqlInsert);
             }
             
@@ -867,14 +894,14 @@ public class GestionExistencias extends JFrame
             emf.close();
 
             //System.out.println("Se transfirieron " + materialesTransferidos + " materiales de ObjectDB a MySQL.");
-        } 
-        catch (SQLException e) 
+        }
+        catch (SQLException e)
         {
-            System.out.println("ERROR al conectar con la base de datos MySQL: \n\n" + e.getMessage());
+            //System.out.println("ERROR al modificar los datos de la tabla materiales en MySQL: \n" + e.getMessage());
         }
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
-
+    
 //---------------------------------------- Menu salir/cerrar ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     class CerrarMenu implements ActionListener 
@@ -889,7 +916,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
-//---------------------------------------- Menu opcciones/eliminar todas las existencias ----------------------------------------
+//---------------------------------------- Menu opciones/eliminar todas las existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     class EliminarExistenciasMenu implements ActionListener 
     {
@@ -903,7 +930,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
-//---------------------------------------- Menu opcciones/eliminar todas las existencias ----------------------------------------
+//---------------------------------------- Menu opciones/eliminar todas las existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     class BorrarHistorialMenu implements ActionListener 
     {
@@ -916,4 +943,250 @@ public class GestionExistencias extends JFrame
         }
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
+
+/*//---------------------------------------- Funcion copia de seguridad ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void copiaSeguridadMySQL() 
+    {
+        // Ventana de entrada de texto para el nombre de la copia de seguridad
+        String nombreTablaDuplicada = JOptionPane.showInputDialog(null, "Introduce el nombre de la copia de seguridad:", "Nombre de la copia de seguridad", JOptionPane.PLAIN_MESSAGE);
+
+        if (nombreTablaDuplicada != null && !nombreTablaDuplicada.isEmpty()) 
+        {
+            // Reemplazar cualquier caracter que no sea letra o numero por guion bajo
+            nombreTablaDuplicada = nombreTablaDuplicada.replaceAll("[^a-zA-Z0-9]", "_");
+
+            try 
+            {
+                // Abrir la conexión
+                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+
+                // Crear y ejecutar la sentencia SQL para duplicar la tabla
+                Statement sentencia = conexion.createStatement();
+                String createTable = "CREATE TABLE IF NOT EXISTS " + nombreTablaDuplicada + " AS SELECT * FROM materiales";
+                sentencia.execute(createTable);
+                System.out.println("Copia de seguridad creada correctamente.");
+            } 
+            catch (SQLException e) 
+            {
+                // Manejar errores
+                System.out.println("ERROR al crear la copia de seguridad: \n" + e.getMessage());
+            }
+        } 
+        else 
+        {
+            System.out.println("Nombre de la copia de seguridad no válido.");
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+/*//---------------------------------------- Menu opciones/copia de seguridad ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    class CopiaSeguridadMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                copiaSeguridadMySQL();
+            }
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+/*//---------------------------------------- Funcion transferir materiales de ObjectDB a TXT ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void transferirMaterialesObjectDBtoTXT()
+    {
+        try 
+        {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(txtfile));
+    
+            // Consulta la base de datos para obtener los materiales
+            TypedQuery<Material> consulta = em.createQuery("SELECT m FROM Material m", Material.class);
+            List<Material> materiales = consulta.getResultList();
+    
+            // Recorre la lista de materiales y escribe la información en el archivo
+            for (Material material : materiales) 
+            {   
+                String otext = "'" + material.getNombre() + "', '" + material.getCantidad() + "', '" + material.getPrecioUnidad() + "'";
+                bw.write(otext);
+                bw.newLine();
+            }
+    
+            // Cierra el BufferedWriter
+            bw.close();
+    
+            // Muestra un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Datos copiados al fichero '" + txtfile + "'", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (IOException ioe) 
+        {
+            // Muestra un mensaje de error en caso de excepción de escritura
+            JOptionPane.showMessageDialog(null, "Se ha producido un error de escritura", "Error", JOptionPane.ERROR_MESSAGE);
+            // Imprime el mensaje de error en la consola
+            System.err.println(ioe.getMessage());
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+/*//---------------------------------------- Funcion transferir materiales de MySQL a TXT ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void transferirMaterialesMySQLtoTXT()
+    {
+        try 
+        {
+            // Establecer la conexión con MySQL
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+    
+            // Crear el archivo de texto
+            BufferedWriter bw = new BufferedWriter(new FileWriter(txtfile));
+    
+            // Crear una consulta SQL para obtener los materiales
+            Statement sentencia = conexion.createStatement();
+            String consultaSQL = "SELECT nombre, cantidad, precioUnidad FROM materiales";
+            ResultSet resultado = sentencia.executeQuery(consultaSQL);
+    
+            // Escribir la información en el archivo de texto
+            while (resultado.next())
+            {
+                String nombre = resultado.getString("nombre");
+                int cantidad = resultado.getInt("cantidad");
+                double precioUnidad = resultado.getDouble("precioUnidad");
+    
+                String otext = "'" + nombre + "', '" + cantidad + "', '" + precioUnidad + "'";
+                bw.write(otext);
+                bw.newLine();
+            }
+    
+            // Cerrar recursos
+            bw.close();
+            resultado.close();
+            sentencia.close();
+            conexion.close();
+    
+            // Mostrar un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Datos copiados al fichero '" + txtfile + "'", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (IOException | SQLException e) 
+        {
+            // Mostrar un mensaje de error en caso de excepción
+            JOptionPane.showMessageDialog(null, "Se ha producido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            // Imprimir el mensaje de error en la consola
+            System.err.println(e.getMessage());
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+/*//---------------------------------------- Funcion transferir materiales de TXT a MySQL ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void cargarMaterialesTXTtoMySQL() 
+    {
+        try 
+        {
+            // Establecer la conexión con MySQL
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+
+            // Crear un lector de archivos para leer el archivo de texto
+            BufferedReader br = new BufferedReader(new FileReader(txtfile));
+
+            // Preparar una consulta SQL para insertar los datos
+            PreparedStatement statement = conexion.prepareStatement("INSERT INTO materiales (nombre, cantidad, precioUnidad) VALUES (?, ?, ?)");
+
+            // Leer cada línea del archivo de texto y procesarla
+            String linea;
+            while ((linea = br.readLine()) != null)
+            {
+                // Dividir la línea en partes separadas por comas
+                String[] partes = linea.split(", ");
+
+                // Obtener los valores de nombre, cantidad y precioUnidad
+                String nombre = partes[0].substring(1, partes[0].length() - 1);
+                int cantidad = Integer.parseInt(partes[1].substring(1, partes[1].length() - 1));
+                double precioUnidad = Double.parseDouble(partes[2].substring(1, partes[2].length() - 1));
+
+                // Establecer los parámetros de la consulta preparada
+                statement.setString(1, nombre);
+                statement.setInt(2, cantidad);
+                statement.setDouble(3, precioUnidad);
+
+                // Ejecutar la consulta preparada
+                statement.executeUpdate();
+            }
+
+            // Cerrar recursos
+            br.close();
+            statement.close();
+            conexion.close();
+
+            // Mostrar un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Datos cargados desde el fichero '" + txtfile + "' a la base de datos", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (IOException | SQLException e) 
+        {
+            // Mostrar un mensaje de error en caso de excepción
+            JOptionPane.showMessageDialog(null, "Se ha producido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            // Imprimir el mensaje de error en la consola
+            System.err.println(e.getMessage());
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+/*//---------------------------------------- Funcion transferir materiales de TXT a ObjectDB ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void cargarMaterialesTXTtoObjectDB() 
+    {
+        try 
+        {
+            // Establecer la conexión con ObjectDB
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+            EntityManager em = emf.createEntityManager();
+            em.getTransaction().begin();
+    
+            // Crear un lector de archivos para leer el archivo de texto
+            BufferedReader br = new BufferedReader(new FileReader(txtfile));
+    
+            // Leer cada línea del archivo de texto y procesarla
+            String linea;
+            while ((linea = br.readLine()) != null) 
+            {
+                // Dividir la línea en partes separadas por comas
+                String[] partes = linea.split(", ");
+    
+                // Obtener los valores de nombre, cantidad y precioUnidad
+                String nombre = partes[0].substring(1, partes[0].length() - 1);
+                int cantidad = Integer.parseInt(partes[1].substring(1, partes[1].length() - 1));
+                double precioUnidad = Double.parseDouble(partes[2].substring(1, partes[2].length() - 1));
+    
+                // Crear una instancia de Material y establecer sus atributos
+                Material material = new Material();
+                material.setNombre(nombre);
+                material.setCantidad(cantidad);
+                material.setPrecioUnidad(precioUnidad);
+    
+                // Persistir el objeto Material en la base de datos ObjectDB
+                em.persist(material);
+            }
+    
+            // Commit de la transacción
+            em.getTransaction().commit();
+    
+            // Cerrar recursos
+            br.close();
+            em.close();
+            emf.close();
+    
+            actualizarTextoETF();
+            // Mostrar un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Datos cargados desde el fichero '" + txtfile + "' a la base de datos ObjectDB", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (IOException | NumberFormatException e) 
+        {
+            // Mostrar un mensaje de error en caso de excepción
+            JOptionPane.showMessageDialog(null, "Se ha producido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            // Imprimir el mensaje de error en la consola
+            System.err.println(e.getMessage());
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
 }
