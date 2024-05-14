@@ -19,12 +19,12 @@ public class GestionExistencias extends JFrame
     private EntityManagerFactory emf;
     private EntityManager em;
     private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf;
-    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, BOTONPRUEBAS;
+    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb;// BOTONPRUEBAS;
     private JTextArea hmf, etf;
-    private JMenuItem ex, hi, ce;
+    private JMenuItem ex, hi, ce, cs, tot, tmt, tto, ttm;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
-    private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
+    private final String txtfile="Trabajo_Final_Programacion/existencias.txt";
 
     public static void main(String args[]) 
     {
@@ -35,12 +35,12 @@ public class GestionExistencias extends JFrame
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("Trabajo_Final_Programacion/imagenes/fondo.jpg");
         fondo.setLayout(null);
         setContentPane(fondo);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Trabajo_Final_Programacion/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
@@ -71,6 +71,15 @@ public class GestionExistencias extends JFrame
         menuOpciones.add(ex = new JMenuItem("Eliminar todos los materiales", 'E'));
         jmb.add(menuOpciones);
 
+        JMenu transferir = new JMenu("Transferir");
+        transferir.add(cs = new JMenuItem("Copia de seguridad MySQL", 'C'));
+        transferir.addSeparator();
+        transferir.add(tot = new JMenuItem("Transferir ObjectDB a TXT", 'T'));
+        transferir.add(tto = new JMenuItem("Transferir TXT a ObjectDB", 'T'));
+        transferir.add(tmt = new JMenuItem("Transferir MySQL a TXT", 'T'));
+        transferir.add(ttm = new JMenuItem("Transferir TXT a MySQL", 'T'));
+        jmb.add(transferir);
+
         JMenu exitMenu = new JMenu("Salir");
         exitMenu.setMnemonic('S');
         exitMenu.add(ce = new JMenuItem("Cerrar", 'C'));
@@ -79,16 +88,14 @@ public class GestionExistencias extends JFrame
         //Agregar actionListener a los elementos del menú
         hi.addActionListener(new BorrarHistorialMenu());
         ex.addActionListener(new EliminarExistenciasMenu());
+        cs.addActionListener(new CopiaSeguridadMenu());
+        tot.addActionListener(new TransferirMaterialesObjectDBtoTXTMenu());
+        tto.addActionListener(new TransferirMaterialesTXTtoObjectDBMenu());
+        tmt.addActionListener(new TransferirMaterialesMySQLtoTXTMenu());
+        ttm.addActionListener(new TransferirMaterialesTXTtoMySQLMenu());
         ce.addActionListener(new CerrarMenu());
 //---------------------------------------- Hasta aqui ----------------------------------------
-
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        JMenuItem seguridad;
-        menuOpciones.addSeparator();
-        menuOpciones.add(seguridad = new JMenuItem("Copia de seguridad", 'C'));
-        //seguridad.addActionListener(new CopiaSeguridadMenu());
         BOTONPRUEBAS = new JButton("BOTON PARA PRUEBAS");
         BOTONPRUEBAS.setBounds(590, 500, 250, 25);
         fondo.add(BOTONPRUEBAS);
@@ -97,16 +104,9 @@ public class GestionExistencias extends JFrame
             public void actionPerformed(ActionEvent e) 
             {
                 //copiaSeguridadMySQL();
-                //transferirMaterialesObjectDBtoTXT();
-                //transferirMaterialesMySQLtoTXT();
-                //cargarMaterialesTXTtoMySQL();
-                //cargarMaterialesTXTtoObjectDB();
             }
         });
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
@@ -127,18 +127,18 @@ public class GestionExistencias extends JFrame
         fondo.add(ir); // Agregar la imagen
         add(new JLabel("Nombre: ")).setBounds(60, 80, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         nrf = new JTextField(); // Crear un campo
-        nrf.setBounds(130, 80, 150, altoCampos); // Establecer posición y tamaño
+        nrf.setBounds(130, 80, 170, altoCampos); // Establecer posición y tamaño
         fondo.add(nrf); // Agregarlo
         add(new JLabel("Cantidad: ")).setBounds(60, 120, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         crf = new JTextField(); // Crear un campo
-        crf.setBounds(150, 120, 130, altoCampos);  // Establecer posición y tamaño
+        crf.setBounds(150, 120, 150, altoCampos);  // Establecer posición y tamaño
         fondo.add(crf); // Agregarlo
         add(new JLabel("Precio unidad: ")).setBounds(60, 160, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         ppurf = new JTextField(); // Crear un campo
-        ppurf.setBounds(170, 160, 110, altoCampos); // Establecer posición y tamaño
+        ppurf.setBounds(170, 160, 130, altoCampos); // Establecer posición y tamaño
         fondo.add(ppurf); // Agregarlo
         rb = new JButton("Registrar"); // Crear un botón
-        rb.setBounds(120, alturaBoton, largoBoton, altoCampos); // Establecer posición y tamaño
+        rb.setBounds(130, alturaBoton, largoBoton, altoCampos); // Establecer posición y tamaño
         fondo.add(rb); // Agregarlo
 
         add(new JLabel("Añadir material: ")).setBounds(340, 40, largoTextos, altoCampos);
@@ -147,14 +147,14 @@ public class GestionExistencias extends JFrame
         fondo.add(ia);
         add(new JLabel("Nombre: ")).setBounds(340, 80, largoTextos, altoCampos);
         naf = new JComboBox<>(); // Crear lista de almacen de elementos registrados
-        naf.setBounds(410, 80, 150, altoCampos);
+        naf.setBounds(410, 80, 170, altoCampos);
         fondo.add(naf);
         add(new JLabel("Cantidad: ")).setBounds(340, 120, largoTextos, altoCampos);
         caf = new JTextField();
-        caf.setBounds(430, 120, 130, altoCampos);
+        caf.setBounds(430, 120, 150, altoCampos);
         fondo.add(caf);
         ab = new JButton("Añadir");
-        ab.setBounds(400, alturaBoton, largoBoton, altoCampos);
+        ab.setBounds(410, alturaBoton, largoBoton, altoCampos);
         fondo.add(ab);
 
         add(new JLabel("Editar material: ")).setBounds(620, 40, largoTextos, 25);
@@ -163,18 +163,18 @@ public class GestionExistencias extends JFrame
         fondo.add(iedit);
         add(new JLabel("Nombre: ")).setBounds(620, 80, largoTextos, altoCampos);
         neditf = new JComboBox<>();
-        neditf.setBounds(690, 80, 150, altoCampos);
+        neditf.setBounds(690, 80, 170, altoCampos);
         fondo.add(neditf);
         add(new JLabel("Cantidad: ")).setBounds(620, 120, largoTextos, altoCampos);
         ceditf = new JTextField();
-        ceditf.setBounds(710, 120, 130, altoCampos);
+        ceditf.setBounds(710, 120, 150, altoCampos);
         fondo.add(ceditf);
         add(new JLabel("Precio unidad: ")).setBounds(620, 160, largoTextos, altoCampos);
         ppueditf = new JTextField();
-        ppueditf.setBounds(730, 160, 110, altoCampos);
+        ppueditf.setBounds(730, 160, 130, altoCampos);
         fondo.add(ppueditf);
         editb = new JButton("Editar");
-        editb.setBounds(680, alturaBoton, largoBoton, altoCampos);
+        editb.setBounds(690, alturaBoton, largoBoton, altoCampos);
         fondo.add(editb);
 
         add(new JLabel("Retirar material: ")).setBounds(60, 280, largoTextos, 25);
@@ -183,14 +183,14 @@ public class GestionExistencias extends JFrame
         fondo.add(ib);
         add(new JLabel("Nombre: ")).setBounds(60, 320, largoTextos, altoCampos);
         nbf = new JComboBox<>();
-        nbf.setBounds(130, 320, 150, altoCampos);
+        nbf.setBounds(130, 320, 170, altoCampos);
         fondo.add(nbf);
         add(new JLabel("Cantidad: ")).setBounds(60, 360, largoTextos, altoCampos);
         cbf = new JTextField();
-        cbf.setBounds(150, 360, 130, altoCampos);
+        cbf.setBounds(150, 360, 150, altoCampos);
         fondo.add(cbf);
         bb = new JButton("Retirar");
-        bb.setBounds(120, alturaBoton2, largoBoton, altoCampos);
+        bb.setBounds(130, alturaBoton2, largoBoton, altoCampos);
         fondo.add(bb);
 
         add(new JLabel("Eliminar material: ")).setBounds(340, 280, largoTextos, altoCampos);
@@ -199,10 +199,10 @@ public class GestionExistencias extends JFrame
         fondo.add(ie);
         add(new JLabel("Nombre: ")).setBounds(340, 320, largoTextos, altoCampos);
         nef = new JComboBox<>();
-        nef.setBounds(410, 320, 150, altoCampos);
+        nef.setBounds(410, 320, 170, altoCampos);
         fondo.add(nef);
         eb = new JButton("Eliminar");
-        eb.setBounds(400, alturaBoton2, largoBoton, altoCampos);
+        eb.setBounds(410, alturaBoton2, largoBoton, altoCampos);
         fondo.add(eb);
 
         add(new JLabel("Modificar nombre: ")).setBounds(620, 280, largoTextos, altoCampos);
@@ -211,14 +211,14 @@ public class GestionExistencias extends JFrame
         fondo.add(im);
         add(new JLabel("Actual: ")).setBounds(620, 320, largoTextos, altoCampos);
         nof = new JComboBox<>();
-        nof.setBounds(690, 320, 150, altoCampos);
+        nof.setBounds(690, 320, 170, altoCampos);
         fondo.add(nof);
         add(new JLabel("Nuevo: ")).setBounds(620, 360, largoTextos, altoCampos);
         ncf = new JTextField();
-        ncf.setBounds(690, 360, 150, altoCampos);
+        ncf.setBounds(690, 360, 170, altoCampos);
         fondo.add(ncf);
         ncb = new JButton("Modificar");
-        ncb.setBounds(680, alturaBoton2, largoBoton, altoCampos);
+        ncb.setBounds(690, alturaBoton2, largoBoton, altoCampos);
         fondo.add(ncb);
 
         // Crear area de texto
@@ -229,7 +229,7 @@ public class GestionExistencias extends JFrame
         hmf = new JTextArea(); // Crear un area
         hmf.setEditable(false); // Que no sea editable
         JScrollPane scrollPane = new JScrollPane(hmf); // Añadir scroll
-        scrollPane.setBounds(60, 540, 780, 160); // Establecer posición y tamaño
+        scrollPane.setBounds(60, 540, 800, 160); // Establecer posición y tamaño
         fondo.add(scrollPane); // Agregarlo
         bhb = new JButton("Borrar el historial");
         bhb.setBounds(350, 500, largoBoton+80, altoCampos);
@@ -944,7 +944,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
-/*//---------------------------------------- Funcion copia de seguridad ----------------------------------------
+//---------------------------------------- Funcion copia de seguridad ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void copiaSeguridadMySQL() 
     {
@@ -980,7 +980,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Menu opciones/copia de seguridad ----------------------------------------
+//---------------------------------------- Menu opciones/copia de seguridad ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     class CopiaSeguridadMenu implements ActionListener 
     {
@@ -994,7 +994,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Funcion transferir materiales de ObjectDB a TXT ----------------------------------------
+//---------------------------------------- Funcion transferir materiales de ObjectDB a TXT ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void transferirMaterialesObjectDBtoTXT()
     {
@@ -1030,7 +1030,22 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Funcion transferir materiales de MySQL a TXT ----------------------------------------
+//---------------------------------------- Menu opciones/ transferir materiales de ObjectDB a TXT ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    class TransferirMaterialesObjectDBtoTXTMenu implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                transferirMaterialesObjectDBtoTXT();
+            }
+            
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+//---------------------------------------- Funcion transferir materiales de MySQL a TXT ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void transferirMaterialesMySQLtoTXT()
     {
@@ -1078,7 +1093,95 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Funcion transferir materiales de TXT a MySQL ----------------------------------------
+//---------------------------------------- Menu opciones/ transferir materiales de MySQL a TXT ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    class TransferirMaterialesMySQLtoTXTMenu implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                transferirMaterialesMySQLtoTXT();
+            }
+            
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+//---------------------------------------- Funcion transferir materiales de TXT a ObjectDB ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    private void cargarMaterialesTXTtoObjectDB() 
+    {
+        try 
+        {
+            // Establecer la conexión con ObjectDB
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+            EntityManager em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            // Crear un lector de archivos para leer el archivo de texto
+            BufferedReader br = new BufferedReader(new FileReader(txtfile));
+
+            // Leer cada línea del archivo de texto y procesarla
+            String linea;
+            while ((linea = br.readLine()) != null) 
+            {
+                // Dividir la línea en partes separadas por comas
+                String[] partes = linea.split(", ");
+
+                // Obtener los valores de nombre, cantidad y precioUnidad
+                String nombre = partes[0].substring(1, partes[0].length() - 1);
+                int cantidad = Integer.parseInt(partes[1].substring(1, partes[1].length() - 1));
+                double precioUnidad = Double.parseDouble(partes[2].substring(1, partes[2].length() - 1));
+
+                // Crear una instancia de Material y establecer sus atributos
+                Material material = new Material();
+                material.setNombre(nombre);
+                material.setCantidad(cantidad);
+                material.setPrecioUnidad(precioUnidad);
+
+                // Persistir el objeto Material en la base de datos ObjectDB
+                em.persist(material);
+            }
+
+            // Commit de la transacción
+            em.getTransaction().commit();
+
+            // Cerrar recursos
+            br.close();
+            em.close();
+            emf.close();
+
+            actualizarTextoETF();
+            // Mostrar un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Datos cargados desde el fichero '" + txtfile + "' a la base de datos ObjectDB", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (IOException | NumberFormatException e) 
+        {
+            // Mostrar un mensaje de error en caso de excepción
+            JOptionPane.showMessageDialog(null, "Se ha producido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            // Imprimir el mensaje de error en la consola
+            System.err.println(e.getMessage());
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+//---------------------------------------- Menu opciones/ transferir materiales de TXT a ObjectDB ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    class TransferirMaterialesTXTtoObjectDBMenu implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                cargarMaterialesTXTtoObjectDB();
+            }
+            
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------*/
+
+//---------------------------------------- Funcion transferir materiales de TXT a MySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void cargarMaterialesTXTtoMySQL() 
     {
@@ -1132,60 +1235,17 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Funcion transferir materiales de TXT a ObjectDB ----------------------------------------
+//---------------------------------------- Menu opciones/ transferir materiales de TXT a MySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    private void cargarMaterialesTXTtoObjectDB() 
+    class TransferirMaterialesTXTtoMySQLMenu implements ActionListener
     {
-        try 
+        public void actionPerformed(ActionEvent e) 
         {
-            // Establecer la conexión con ObjectDB
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
-            EntityManager em = emf.createEntityManager();
-            em.getTransaction().begin();
-    
-            // Crear un lector de archivos para leer el archivo de texto
-            BufferedReader br = new BufferedReader(new FileReader(txtfile));
-    
-            // Leer cada línea del archivo de texto y procesarla
-            String linea;
-            while ((linea = br.readLine()) != null) 
+            if(e.getSource() instanceof JMenuItem) 
             {
-                // Dividir la línea en partes separadas por comas
-                String[] partes = linea.split(", ");
-    
-                // Obtener los valores de nombre, cantidad y precioUnidad
-                String nombre = partes[0].substring(1, partes[0].length() - 1);
-                int cantidad = Integer.parseInt(partes[1].substring(1, partes[1].length() - 1));
-                double precioUnidad = Double.parseDouble(partes[2].substring(1, partes[2].length() - 1));
-    
-                // Crear una instancia de Material y establecer sus atributos
-                Material material = new Material();
-                material.setNombre(nombre);
-                material.setCantidad(cantidad);
-                material.setPrecioUnidad(precioUnidad);
-    
-                // Persistir el objeto Material en la base de datos ObjectDB
-                em.persist(material);
+                cargarMaterialesTXTtoMySQL();
             }
-    
-            // Commit de la transacción
-            em.getTransaction().commit();
-    
-            // Cerrar recursos
-            br.close();
-            em.close();
-            emf.close();
-    
-            actualizarTextoETF();
-            // Mostrar un mensaje de éxito
-            JOptionPane.showMessageDialog(null, "Datos cargados desde el fichero '" + txtfile + "' a la base de datos ObjectDB", "Info", JOptionPane.INFORMATION_MESSAGE);
-        } 
-        catch (IOException | NumberFormatException e) 
-        {
-            // Mostrar un mensaje de error en caso de excepción
-            JOptionPane.showMessageDialog(null, "Se ha producido un error", "Error", JOptionPane.ERROR_MESSAGE);
-            // Imprimir el mensaje de error en la consola
-            System.err.println(e.getMessage());
+            
         }
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
