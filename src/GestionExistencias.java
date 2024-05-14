@@ -19,12 +19,12 @@ public class GestionExistencias extends JFrame
     private EntityManagerFactory emf;
     private EntityManager em;
     private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf;
-    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb;// BOTONPRUEBAS;
+    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, BOTONPRUEBAS;
     private JTextArea hmf, etf;
-    private JMenuItem ex, hi, ce, cs, tot, tmt, tto, ttm;
+    private JMenuItem ex, hi, ce, cs, tom, tmo, tot, tmt, tto, ttm;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
-    private final String txtfile="Trabajo_Final_Programacion/existencias.txt";
+    private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
 
     public static void main(String args[]) 
     {
@@ -35,12 +35,12 @@ public class GestionExistencias extends JFrame
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("Trabajo_Final_Programacion/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
         fondo.setLayout(null);
         setContentPane(fondo);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("Trabajo_Final_Programacion/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
@@ -71,8 +71,12 @@ public class GestionExistencias extends JFrame
         menuOpciones.add(ex = new JMenuItem("Eliminar todos los materiales", 'E'));
         jmb.add(menuOpciones);
 
-        JMenu transferir = new JMenu("Transferir");
-        transferir.add(cs = new JMenuItem("Copia de seguridad MySQL", 'C'));
+        JMenu transferir = new JMenu("Transferir y copiar");
+        transferir.setMnemonic('T');
+        transferir.add(cs = new JMenuItem("Copia de tabla MySQL", 'C'));
+        transferir.addSeparator();
+        transferir.add(tom = new JMenuItem("Transferir ObjectDB a MySQL", 'T'));
+        transferir.add(tmo = new JMenuItem("Transferir MySQL a ObjectDB", 'T'));
         transferir.addSeparator();
         transferir.add(tot = new JMenuItem("Transferir ObjectDB a TXT", 'T'));
         transferir.add(tto = new JMenuItem("Transferir TXT a ObjectDB", 'T'));
@@ -89,13 +93,15 @@ public class GestionExistencias extends JFrame
         hi.addActionListener(new BorrarHistorialMenu());
         ex.addActionListener(new EliminarExistenciasMenu());
         cs.addActionListener(new CopiaSeguridadMenu());
+        tom.addActionListener(new TransferirMaterialesObjectDBtoMySQLMenu());
+        tmo.addActionListener(new TransferirMaterialesMySQLtoObjectDBMenu());
         tot.addActionListener(new TransferirMaterialesObjectDBtoTXTMenu());
         tto.addActionListener(new TransferirMaterialesTXTtoObjectDBMenu());
         tmt.addActionListener(new TransferirMaterialesMySQLtoTXTMenu());
         ttm.addActionListener(new TransferirMaterialesTXTtoMySQLMenu());
         ce.addActionListener(new CerrarMenu());
 //---------------------------------------- Hasta aqui ----------------------------------------
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         BOTONPRUEBAS = new JButton("BOTON PARA PRUEBAS");
         BOTONPRUEBAS.setBounds(590, 500, 250, 25);
         fondo.add(BOTONPRUEBAS);
@@ -104,9 +110,10 @@ public class GestionExistencias extends JFrame
             public void actionPerformed(ActionEvent e) 
             {
                 //copiaSeguridadMySQL();
+                transferirMaterialesMySQLtoObjectDB();
             }
         });
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
@@ -444,18 +451,6 @@ public class GestionExistencias extends JFrame
             nef.addItem(material);
             neditf.addItem(material);
             nof.addItem(material);
-        }
-    }
-
-    // Borrar el historial de modificaciones
-    private void borrarHistorial() 
-    {
-        // Mostrar ventana de confirmación
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas borrar el historial?", "Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        // Verificar la opción seleccionada por el usuario
-        if (opcion == JOptionPane.YES_OPTION) 
-        {
-            hmf.setText("");
         }
     }
 
@@ -829,6 +824,32 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
+//---------------------------------------- Funcion borrar historial ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    // Borrar el historial de modificaciones
+    private void borrarHistorial() 
+    {
+        // Mostrar ventana de confirmación
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas borrar el historial?", "Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        // Verificar la opción seleccionada por el usuario
+        if (opcion == JOptionPane.YES_OPTION) 
+        {
+            hmf.setText("");
+        }
+    }
+
+    class BorrarHistorialMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                borrarHistorial();
+            }
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------
+
 //---------------------------------------- Funcion borrar todo existencias ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void borrarTodasExistencias() 
@@ -848,6 +869,17 @@ public class GestionExistencias extends JFrame
             JOptionPane.showMessageDialog(null, "Se han borrado todos los materiales.");
         }
     }
+
+class EliminarExistenciasMenu implements ActionListener 
+{
+    public void actionPerformed(ActionEvent e) 
+    {
+        if(e.getSource() instanceof JMenuItem) 
+        {
+            borrarTodasExistencias();
+        }
+    }
+}
 //---------------------------------------- Hasta aqui ----------------------------------------
 
 //---------------------------------------- Funcion transferir datos de ObjectDB a MySQL ----------------------------------------
@@ -900,51 +932,88 @@ public class GestionExistencias extends JFrame
             //System.out.println("ERROR al modificar los datos de la tabla materiales en MySQL: \n" + e.getMessage());
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------
-    
-//---------------------------------------- Menu salir/cerrar ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
-    class CerrarMenu implements ActionListener 
+
+    class TransferirMaterialesObjectDBtoMySQLMenu implements ActionListener 
     {
         public void actionPerformed(ActionEvent e) 
         {
             if(e.getSource() instanceof JMenuItem) 
             {
-                System.exit(0);
+                transferirMaterialesObjectDBtoMySQL();
             }
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------
+//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/eliminar todas las existencias ----------------------------------------
+//---------------------------------------- Funcion transferir datos de MySQL a ObjectDB ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
-    class EliminarExistenciasMenu implements ActionListener 
+    private void transferirMaterialesMySQLtoObjectDB()
+    {
+        // Variables para la conexión a MySQL
+        Connection conexionMySQL = null;
+        Statement sentenciaMySQL = null;
+
+        // Variables para la conexión a ObjectDB
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+        EntityManager em = emf.createEntityManager();
+
+        try
+        {
+            // Conexión a MySQL
+            conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+
+            // Consulta de materiales en MySQL
+            sentenciaMySQL = conexionMySQL.createStatement();
+            String sqlSelect = "SELECT * FROM materiales";
+            ResultSet resultado = sentenciaMySQL.executeQuery(sqlSelect);
+
+            // Eliminar todos los materiales existentes en ObjectDB
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM Material").executeUpdate();
+            em.getTransaction().commit();
+
+            // Inserción de materiales en ObjectDB
+            em.getTransaction().begin();
+            while (resultado.next())
+            {
+                String nombre = resultado.getString("nombre");
+                int cantidad = resultado.getInt("cantidad");
+                double precioUnidad = resultado.getDouble("precioUnidad");
+
+                Material material = new Material(nombre, cantidad, precioUnidad);
+                em.persist(material);
+            }
+            em.getTransaction().commit();
+
+            // Cierre de recursos
+            resultado.close();
+            sentenciaMySQL.close();
+            conexionMySQL.close();
+            em.close();
+            emf.close();
+            actualizarComboBoxMateriales();
+            actualizarTextoETF();
+        }
+        catch (SQLException e)
+        {
+            // Manejo de excepciones
+            e.printStackTrace();
+        }
+    }
+
+    class TransferirMaterialesMySQLtoObjectDBMenu implements ActionListener 
     {
         public void actionPerformed(ActionEvent e) 
         {
             if(e.getSource() instanceof JMenuItem) 
             {
-                borrarTodasExistencias();
+                transferirMaterialesMySQLtoObjectDB();
             }
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------
+//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/eliminar todas las existencias ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
-    class BorrarHistorialMenu implements ActionListener 
-    {
-        public void actionPerformed(ActionEvent e) 
-        {
-            if(e.getSource() instanceof JMenuItem) 
-            {
-                borrarHistorial();
-            }
-        }
-    }
-//---------------------------------------- Hasta aqui ----------------------------------------
-
-//---------------------------------------- Funcion copia de seguridad ----------------------------------------
+//---------------------------------------- Funcion y menu copia de tabla mysql ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void copiaSeguridadMySQL() 
     {
@@ -978,10 +1047,7 @@ public class GestionExistencias extends JFrame
             System.out.println("Nombre de la copia de seguridad no válido.");
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/copia de seguridad ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
     class CopiaSeguridadMenu implements ActionListener 
     {
         public void actionPerformed(ActionEvent e) 
@@ -994,7 +1060,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Funcion transferir materiales de ObjectDB a TXT ----------------------------------------
+//---------------------------------------- Funcion y menu transferir materiales de ObjectDB a TXT ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void transferirMaterialesObjectDBtoTXT()
     {
@@ -1028,10 +1094,7 @@ public class GestionExistencias extends JFrame
             System.err.println(ioe.getMessage());
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/ transferir materiales de ObjectDB a TXT ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
     class TransferirMaterialesObjectDBtoTXTMenu implements ActionListener
     {
         public void actionPerformed(ActionEvent e) 
@@ -1045,7 +1108,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Funcion transferir materiales de MySQL a TXT ----------------------------------------
+//---------------------------------------- Funcion y menu transferir materiales de MySQL a TXT ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void transferirMaterialesMySQLtoTXT()
     {
@@ -1091,10 +1154,7 @@ public class GestionExistencias extends JFrame
             System.err.println(e.getMessage());
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/ transferir materiales de MySQL a TXT ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
     class TransferirMaterialesMySQLtoTXTMenu implements ActionListener
     {
         public void actionPerformed(ActionEvent e) 
@@ -1108,7 +1168,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Funcion transferir materiales de TXT a ObjectDB ----------------------------------------
+//---------------------------------------- Funcion y menu transferir materiales de TXT a ObjectDB ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void cargarMaterialesTXTtoObjectDB() 
     {
@@ -1164,10 +1224,7 @@ public class GestionExistencias extends JFrame
             System.err.println(e.getMessage());
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/ transferir materiales de TXT a ObjectDB ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
     class TransferirMaterialesTXTtoObjectDBMenu implements ActionListener
     {
         public void actionPerformed(ActionEvent e) 
@@ -1181,7 +1238,7 @@ public class GestionExistencias extends JFrame
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Funcion transferir materiales de TXT a MySQL ----------------------------------------
+//---------------------------------------- Funcion y menu transferir materiales de TXT a MySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void cargarMaterialesTXTtoMySQL() 
     {
@@ -1233,10 +1290,7 @@ public class GestionExistencias extends JFrame
             System.err.println(e.getMessage());
         }
     }
-//---------------------------------------- Hasta aqui ----------------------------------------*/
 
-//---------------------------------------- Menu opciones/ transferir materiales de TXT a MySQL ----------------------------------------
-//---------------------------------------- Desde aqui ----------------------------------------
     class TransferirMaterialesTXTtoMySQLMenu implements ActionListener
     {
         public void actionPerformed(ActionEvent e) 
@@ -1249,4 +1303,18 @@ public class GestionExistencias extends JFrame
         }
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
+
+//---------------------------------------- Menu salir/cerrar ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+    class CerrarMenu implements ActionListener 
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                System.exit(0);
+            }
+        }
+    }
+//---------------------------------------- Hasta aqui ----------------------------------------
 }
