@@ -22,11 +22,11 @@ public class GestionExistencias extends JFrame
     private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, BOTONPRUEBAS;
     private JTextArea hmf, etf;
     private JMenuItem ex, hi, ce, cs, tom, tmo, tot, tmt, tto, ttm;
-    private JComboBox<Material> naf, nbf, nef, neditf, nof;
+    private JComboBox<Materiales> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
-    private final String msqls="jdbc:mysql://localhost/existencias";
-    private final String odbs="$objectdb/db/existencias.odb";
-    private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
+    private final String msqls="jdbc:mysql://localhost/GestionExistencias";
+    private final String odbs="$objectdb/db/GestionExistencias.odb";
+    private final String txtfile="Trabajo_Final_Programacion/Materiales.txt";
 
     public static void main(String args[]) 
     {
@@ -37,12 +37,12 @@ public class GestionExistencias extends JFrame
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("Trabajo_Final_Programacion/imagenes/fondo.jpg");
         fondo.setLayout(null);
         setContentPane(fondo);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Trabajo_Final_Programacion/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
@@ -418,11 +418,11 @@ public class GestionExistencias extends JFrame
     // Actualizar el JTextArea con la lista de existencias
     private void actualizarTextoETF() 
     {
-        TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m ORDER BY m.nombre ASC", Material.class);
-        List<Material> existencias = query.getResultList();
+        TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m ORDER BY m.nombre ASC", Materiales.class);
+        List<Materiales> existencias = query.getResultList();
         etf.setText(""); // Borrar el contenido actual de etf
         // Escribir todos los materiales existentes
-        for (Material material : existencias) 
+        for (Materiales material : existencias) 
         {
             agregarTextoETF("  Nombre: " + material.nombre);
             agregarTextoETF("  Cantidad: " + material.cantidad);
@@ -436,8 +436,8 @@ public class GestionExistencias extends JFrame
     private void actualizarComboBoxMateriales() 
     {
         em.getTransaction().begin();
-        TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m", Material.class);
-        List<Material> resultados = query.getResultList();
+        TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m ORDER BY m.nombre ASC", Materiales.class);
+        List<Materiales> resultados = query.getResultList();
         em.getTransaction().commit();
         // Limpiar el JComboBox antes de agregar los nuevos materiales
         naf.removeAllItems();
@@ -446,7 +446,7 @@ public class GestionExistencias extends JFrame
         neditf.removeAllItems();
         nof.removeAllItems();
         // Agregar materiales al JComboBox
-        for (Material material : resultados) 
+        for (Materiales material : resultados) 
         {
             naf.addItem(material);
             nbf.addItem(material);
@@ -455,6 +455,7 @@ public class GestionExistencias extends JFrame
             nof.addItem(material);
         }
     }
+
 
     // Ventanas con texto generico para facilitar la modificacion de los mensajes
     private void rellenarCampos()
@@ -500,15 +501,15 @@ public class GestionExistencias extends JFrame
                 cantidadYPrecioIncorrecto();
                 return;
             }
-            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+            TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
             query.setParameter("nombre", nombre);
-            List<Material> results = query.getResultList();
+            List<Materiales> results = query.getResultList();
             if (!results.isEmpty()) 
             {
                 JOptionPane.showMessageDialog(this, "El material ya existe.");
                 return;
             }
-            Material material = new Material(nombre, cantidadAnnadir, precioUnidadRegistrar);
+            Materiales material = new Materiales(nombre, cantidadAnnadir, precioUnidadRegistrar);
             em.getTransaction().begin();
             em.persist(material);
             em.getTransaction().commit();
@@ -520,7 +521,7 @@ public class GestionExistencias extends JFrame
 
                 //Crear y ejecutar la sentencia SQL            
                 Statement sentencia = conexion.createStatement();
-                String createTable = "CREATE TABLE IF NOT EXISTS materiales (" +      
+                String createTable = "CREATE TABLE IF NOT EXISTS Materiales (" +      
                         "nombre VARCHAR(255), " +
                         "cantidad INT, " +
                         "precioUnidad DOUBLE) " +
@@ -555,7 +556,7 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
     private void agregarMaterial() 
     {
-        Material materialSeleccionado = (Material) naf.getSelectedItem();
+        Materiales materialSeleccionado = (Materiales) naf.getSelectedItem();
         String cantidad = caf.getText();
         if (materialSeleccionado == null || cantidad.isEmpty()) 
         {
@@ -573,10 +574,10 @@ public class GestionExistencias extends JFrame
             
             em.getTransaction().begin();
             // Buscar el material en base al nombre
-            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+            TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
-            List<Material> resultados = query.getResultList();
-            Material materialExistente = resultados.get(0);
+            List<Materiales> resultados = query.getResultList();
+            Materiales materialExistente = resultados.get(0);
             materialExistente.setCantidad(materialExistente.getCantidad() + cantidadAnnadir);
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
@@ -596,7 +597,7 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
     private void editarMaterial() 
     {
-        Material materialSeleccionado = (Material) neditf.getSelectedItem();
+        Materiales materialSeleccionado = (Materiales) neditf.getSelectedItem();
         String cantidadStr = ceditf.getText();    
         String nuevoPrecioStr = ppueditf.getText();
         
@@ -649,10 +650,10 @@ public class GestionExistencias extends JFrame
                 }
                 em.getTransaction().begin();
                 // Buscar el material en base al nombre
-                TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+                TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
                 query.setParameter("nombre", materialSeleccionado.getNombre());
-                List<Material> resultados = query.getResultList();
-                Material materialExistente = resultados.get(0);
+                List<Materiales> resultados = query.getResultList();
+                Materiales materialExistente = resultados.get(0);
                 materialExistente.setPrecioUnidad(nuevoPrecio);
                 em.getTransaction().commit();
                 transferirMaterialesObjectDBtoMySQL();
@@ -672,10 +673,10 @@ public class GestionExistencias extends JFrame
                 }
                 em.getTransaction().begin();
                 // Buscar el material en base al nombre
-                TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+                TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
                 query.setParameter("nombre", materialSeleccionado.getNombre());
-                List<Material> resultados = query.getResultList();
-                Material materialExistente = resultados.get(0);
+                List<Materiales> resultados = query.getResultList();
+                Materiales materialExistente = resultados.get(0);
                 materialExistente.setCantidad(nuevaCantidad);
                 em.getTransaction().commit();
                 transferirMaterialesObjectDBtoMySQL();
@@ -694,10 +695,10 @@ public class GestionExistencias extends JFrame
             }
             em.getTransaction().begin();
             // Buscar el material en base al nombre
-            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+            TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
-            List<Material> resultados = query.getResultList();
-            Material materialExistente = resultados.get(0);
+            List<Materiales> resultados = query.getResultList();
+            Materiales materialExistente = resultados.get(0);
             materialExistente.setCantidad(nuevaCantidad);
             materialExistente.setPrecioUnidad(nuevoPrecio);
             em.getTransaction().commit();
@@ -719,7 +720,7 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
     private void retirarMaterial() 
     {
-        Material materialSeleccionado = (Material) nbf.getSelectedItem();
+        Materiales materialSeleccionado = (Materiales) nbf.getSelectedItem();
         String cantidad = cbf.getText();
         if (materialSeleccionado == null || cantidad.isEmpty()) 
         {
@@ -741,10 +742,10 @@ public class GestionExistencias extends JFrame
             }
             em.getTransaction().begin();
             // Buscar el material en base al nombre
-            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+            TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
-            List<Material> resultados = query.getResultList();
-            Material materialexistente = resultados.get(0);
+            List<Materiales> resultados = query.getResultList();
+            Materiales materialexistente = resultados.get(0);
             materialexistente.setCantidad(materialexistente.getCantidad() - cantidadBorrar);
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
@@ -764,7 +765,7 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
     private void eliminarMaterial() 
     {
-        Material materialSeleccionado = (Material) nef.getSelectedItem();
+        Materiales materialSeleccionado = (Materiales) nef.getSelectedItem();
         if (materialSeleccionado == null) 
         {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un material.", "Material Incorrecto", JOptionPane.WARNING_MESSAGE);
@@ -775,10 +776,10 @@ public class GestionExistencias extends JFrame
         {
             em.getTransaction().begin();
             // Buscar el material en base al nombre
-            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+            TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
             query.setParameter("nombre", materialSeleccionado.getNombre());
-            List<Material> resultados = query.getResultList();
-            Material materialexistente = resultados.get(0);
+            List<Materiales> resultados = query.getResultList();
+            Materiales materialexistente = resultados.get(0);
             em.remove(materialexistente);
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
@@ -793,7 +794,7 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Desde aqui ----------------------------------------
     private void modificarNombre() 
     {
-        Material materialSeleccionado = (Material) nof.getSelectedItem();
+        Materiales materialSeleccionado = (Materiales) nof.getSelectedItem();
         String nuevoNombre = ncf.getText();
         if (materialSeleccionado == null || nuevoNombre.isEmpty()) 
         {
@@ -801,7 +802,7 @@ public class GestionExistencias extends JFrame
             return;
         }
         // Verificar si el nuevo nombre ya existe
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(m) FROM Material m WHERE m.nombre = :nombre", Long.class);
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(m) FROM Materiales m WHERE m.nombre = :nombre", Long.class);
         countQuery.setParameter("nombre", nuevoNombre);
         long count = countQuery.getSingleResult();
         if (count > 0) 
@@ -812,10 +813,10 @@ public class GestionExistencias extends JFrame
         String nombreAnterior = materialSeleccionado.getNombre(); // Guardar el nombre anterior
         em.getTransaction().begin();
         // Buscar el material en base al nombre
-        TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class);
+        TypedQuery<Materiales> query = em.createQuery("SELECT m FROM Materiales m WHERE m.nombre = :nombre", Materiales.class);
         query.setParameter("nombre", materialSeleccionado.getNombre());
-        List<Material> resultados = query.getResultList();
-        Material materialExistente = resultados.get(0);
+        List<Materiales> resultados = query.getResultList();
+        Materiales materialExistente = resultados.get(0);
         materialExistente.setNombre(nuevoNombre);
         em.getTransaction().commit();
         transferirMaterialesObjectDBtoMySQL();
@@ -862,7 +863,7 @@ public class GestionExistencias extends JFrame
         if (opcion == JOptionPane.YES_OPTION) 
         {
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Material").executeUpdate();
+            em.createQuery("DELETE FROM Materiales").executeUpdate();
             em.getTransaction().commit();
             transferirMaterialesObjectDBtoMySQL();
             hmf.setText("");
@@ -903,21 +904,21 @@ class EliminarExistenciasMenu implements ActionListener
             
             // Eliminacion de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
-            String sqlDelete = "DELETE FROM materiales";
+            String sqlDelete = "DELETE FROM Materiales";
             sentenciaMySQL.executeUpdate(sqlDelete);
 
             // Consulta de materiales en ObjectDB
-            Query consulta = em.createQuery("SELECT m FROM Material m", Material.class);
-            List<Material> materiales = consulta.getResultList();
+            Query consulta = em.createQuery("SELECT m FROM Materiales m", Materiales.class);
+            List<Materiales> materiales = consulta.getResultList();
 
             // Inserción de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
-            for (Material material : materiales)
+            for (Materiales material : materiales)
             {
                 String nombre = material.getNombre();
                 int cantidad = material.getCantidad();
                 double precioUnidad = material.getPrecioUnidad();
-                String sqlInsert = "INSERT INTO materiales (nombre, cantidad, precioUnidad) VALUES ('" +
+                String sqlInsert = "INSERT INTO Materiales (nombre, cantidad, precioUnidad) VALUES ('" +
                                     nombre + "', " + cantidad + ", " + precioUnidad + ")";
                 sentenciaMySQL.executeUpdate(sqlInsert);
             }
@@ -966,12 +967,12 @@ class EliminarExistenciasMenu implements ActionListener
 
             // Consulta de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
-            String sqlSelect = "SELECT * FROM materiales";
+            String sqlSelect = "SELECT * FROM Materiales";
             ResultSet resultado = sentenciaMySQL.executeQuery(sqlSelect);
 
             // Eliminar todos los materiales existentes en ObjectDB
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Material").executeUpdate();
+            em.createQuery("DELETE FROM Materiales").executeUpdate();
             em.getTransaction().commit();
 
             // Inserción de materiales en ObjectDB
@@ -982,7 +983,7 @@ class EliminarExistenciasMenu implements ActionListener
                 int cantidad = resultado.getInt("cantidad");
                 double precioUnidad = resultado.getDouble("precioUnidad");
 
-                Material material = new Material(nombre, cantidad, precioUnidad);
+                Materiales material = new Materiales(nombre, cantidad, precioUnidad);
                 em.persist(material);
             }
             em.getTransaction().commit();
@@ -1034,7 +1035,7 @@ class EliminarExistenciasMenu implements ActionListener
 
                 // Crear y ejecutar la sentencia SQL para duplicar la tabla
                 Statement sentencia = conexion.createStatement();
-                String createTable = "CREATE TABLE IF NOT EXISTS " + nombreTablaDuplicada + " AS SELECT * FROM materiales";
+                String createTable = "CREATE TABLE IF NOT EXISTS " + nombreTablaDuplicada + " AS SELECT * FROM Materiales";
                 sentencia.execute(createTable);
                 System.out.println("Copia de seguridad creada correctamente.");
             } 
@@ -1071,11 +1072,11 @@ class EliminarExistenciasMenu implements ActionListener
             BufferedWriter bw = new BufferedWriter(new FileWriter(txtfile));
     
             // Consulta la base de datos para obtener los materiales
-            TypedQuery<Material> consulta = em.createQuery("SELECT m FROM Material m", Material.class);
-            List<Material> materiales = consulta.getResultList();
+            TypedQuery<Materiales> consulta = em.createQuery("SELECT m FROM Materiales m", Materiales.class);
+            List<Materiales> materiales = consulta.getResultList();
     
             // Recorre la lista de materiales y escribe la información en el archivo
-            for (Material material : materiales) 
+            for (Materiales material : materiales) 
             {   
                 String otext = "'" + material.getNombre() + "', '" + material.getCantidad() + "', '" + material.getPrecioUnidad() + "'";
                 bw.write(otext);
@@ -1124,7 +1125,7 @@ class EliminarExistenciasMenu implements ActionListener
     
             // Crear una consulta SQL para obtener los materiales
             Statement sentencia = conexion.createStatement();
-            String consultaSQL = "SELECT nombre, cantidad, precioUnidad FROM materiales";
+            String consultaSQL = "SELECT nombre, cantidad, precioUnidad FROM Materiales";
             ResultSet resultado = sentencia.executeQuery(consultaSQL);
     
             // Escribir la información en el archivo de texto
@@ -1197,7 +1198,7 @@ class EliminarExistenciasMenu implements ActionListener
                 double precioUnidad = Double.parseDouble(partes[2].substring(1, partes[2].length() - 1));
 
                 // Crear una instancia de Material y establecer sus atributos
-                Material material = new Material();
+                Materiales material = new Materiales();
                 material.setNombre(nombre);
                 material.setCantidad(cantidad);
                 material.setPrecioUnidad(precioUnidad);
@@ -1215,6 +1216,7 @@ class EliminarExistenciasMenu implements ActionListener
             emf.close();
 
             actualizarTextoETF();
+            actualizarComboBoxMateriales();
             // Mostrar un mensaje de éxito
             JOptionPane.showMessageDialog(null, "Datos cargados desde el fichero '" + txtfile + "' a la base de datos ObjectDB", "Info", JOptionPane.INFORMATION_MESSAGE);
         } 
@@ -1253,7 +1255,7 @@ class EliminarExistenciasMenu implements ActionListener
             BufferedReader br = new BufferedReader(new FileReader(txtfile));
 
             // Preparar una consulta SQL para insertar los datos
-            PreparedStatement statement = conexion.prepareStatement("INSERT INTO materiales (nombre, cantidad, precioUnidad) VALUES (?, ?, ?)");
+            PreparedStatement statement = conexion.prepareStatement("INSERT INTO Materiales (nombre, cantidad, precioUnidad) VALUES (?, ?, ?)");
 
             // Leer cada línea del archivo de texto y procesarla
             String linea;
