@@ -1,5 +1,5 @@
 // Para que se vean las imagenes hay que cambiar la ruta
-// de las imagenes, se encuentran en la linea 38 y 43
+// de las imagenes, se encuentran en la linea 40 y 45
 //
 // Creado y pensado por BEAMONDO
 //
@@ -24,6 +24,8 @@ public class GestionExistencias extends JFrame
     private JMenuItem ex, hi, ce, cs, tom, tmo, tot, tmt, tto, ttm;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
+    private final String odbs="$objectdb/db/existencias.odb";
+    private final String msqls="jdbc:mysql://localhost/existencias";
     private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
 
     public static void main(String args[]) 
@@ -48,7 +50,7 @@ public class GestionExistencias extends JFrame
         try{
             //Abrir la conexión
             System.out.println("Conectando con la base de datos MySQL...");
-            DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
             System.out.println("Conexion establecida.");
         }
         catch (SQLException e)
@@ -256,7 +258,7 @@ public class GestionExistencias extends JFrame
         fondo.add(scrollPane2);
 
         // Configuración de ObjectDB
-        emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+        emf = Persistence.createEntityManagerFactory(odbs);
         em = emf.createEntityManager();
 
         // Configuración de ventana
@@ -514,7 +516,7 @@ public class GestionExistencias extends JFrame
             // Crear tabla MySQL
             try{
                 //Abrir la conexión
-                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+                Connection conexion = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
 
                 //Crear y ejecutar la sentencia SQL            
                 Statement sentencia = conexion.createStatement();
@@ -888,7 +890,7 @@ class EliminarExistenciasMenu implements ActionListener
     private void transferirMaterialesObjectDBtoMySQL()
     {
         // Variables para la conexión a ObjectDB
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
         EntityManager em = emf.createEntityManager();
         
         Connection conexionMySQL = null;
@@ -897,7 +899,7 @@ class EliminarExistenciasMenu implements ActionListener
         try
         {
             // Conexión a MySQL
-            conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            conexionMySQL = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
             
             // Eliminacion de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
@@ -954,13 +956,13 @@ class EliminarExistenciasMenu implements ActionListener
         Statement sentenciaMySQL = null;
 
         // Variables para la conexión a ObjectDB
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
         EntityManager em = emf.createEntityManager();
 
         try
         {
             // Conexión a MySQL
-            conexionMySQL = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            conexionMySQL = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
 
             // Consulta de materiales en MySQL
             sentenciaMySQL = conexionMySQL.createStatement();
@@ -1028,7 +1030,7 @@ class EliminarExistenciasMenu implements ActionListener
             try 
             {
                 // Abrir la conexión
-                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+                Connection conexion = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
 
                 // Crear y ejecutar la sentencia SQL para duplicar la tabla
                 Statement sentencia = conexion.createStatement();
@@ -1115,7 +1117,7 @@ class EliminarExistenciasMenu implements ActionListener
         try 
         {
             // Establecer la conexión con MySQL
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            Connection conexion = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
     
             // Crear el archivo de texto
             BufferedWriter bw = new BufferedWriter(new FileWriter(txtfile));
@@ -1175,7 +1177,7 @@ class EliminarExistenciasMenu implements ActionListener
         try 
         {
             // Establecer la conexión con ObjectDB
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/existencias.odb");
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
 
@@ -1245,7 +1247,7 @@ class EliminarExistenciasMenu implements ActionListener
         try 
         {
             // Establecer la conexión con MySQL
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/existencias", usuarioMySQL, contraseñaMySQL);
+            Connection conexion = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
 
             // Crear un lector de archivos para leer el archivo de texto
             BufferedReader br = new BufferedReader(new FileReader(txtfile));
