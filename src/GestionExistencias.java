@@ -80,8 +80,10 @@ public class GestionExistencias
         accederb.setBounds(150, 100, 100, 25);
         loginPanel.add(accederb);
 
-        accederb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        accederb.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 ventanalogin.setVisible(false);
                 ventana.setVisible(true);
             }
