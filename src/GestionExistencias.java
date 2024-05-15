@@ -24,8 +24,8 @@ public class GestionExistencias extends JFrame
     private JMenuItem ex, hi, ce, cs, tom, tmo, tot, tmt, tto, ttm;
     private JComboBox<Material> naf, nbf, nef, neditf, nof;
     private String usuarioMySQL = "root", contraseñaMySQL = "";
-    private final String odbs="$objectdb/db/existencias.odb";
     private final String msqls="jdbc:mysql://localhost/existencias";
+    private final String odbs="$objectdb/db/existencias.odb";
     private final String txtfile="Pruebas_Trabajo_Final/existencias.txt";
 
     public static void main(String args[]) 
@@ -47,8 +47,9 @@ public class GestionExistencias extends JFrame
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
 
+        // Configuración de MySQL
         try{
-            //Abrir la conexión
+            //Abrir la conexión con MySQL
             System.out.println("Conectando con la base de datos MySQL...");
             DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
             System.out.println("Conexion establecida.");
@@ -58,6 +59,10 @@ public class GestionExistencias extends JFrame
             //e.printStackTrace();
             System.out.println("ERROR al conectar con la base de datos MySQL: \n" + e.getMessage());
         }
+
+        // Configuración de ObjectDB
+        emf = Persistence.createEntityManagerFactory(odbs);
+        em = emf.createEntityManager();
 //---------------------------------------- Menu superior ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Crear una barra de menú        
@@ -73,7 +78,7 @@ public class GestionExistencias extends JFrame
         menuOpciones.add(ex = new JMenuItem("Eliminar todos los materiales", 'E'));
         jmb.add(menuOpciones);
 
-        JMenu transferir = new JMenu("Transferir y copiar");
+        JMenu transferir = new JMenu("Transferir");
         transferir.setMnemonic('T');
         transferir.add(cs = new JMenuItem("Copia de tabla MySQL", 'C'));
         transferir.addSeparator();
@@ -103,7 +108,7 @@ public class GestionExistencias extends JFrame
         ttm.addActionListener(new TransferirMaterialesTXTtoMySQLMenu());
         ce.addActionListener(new CerrarMenu());
 //---------------------------------------- Hasta aqui ----------------------------------------
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         BOTONPRUEBAS = new JButton("BOTON PARA PRUEBAS");
         BOTONPRUEBAS.setBounds(590, 500, 250, 25);
         fondo.add(BOTONPRUEBAS);
@@ -112,10 +117,9 @@ public class GestionExistencias extends JFrame
             public void actionPerformed(ActionEvent e) 
             {
                 //copiaSeguridadMySQL();
-                transferirMaterialesMySQLtoObjectDB();
             }
         });
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
@@ -257,17 +261,13 @@ public class GestionExistencias extends JFrame
         scrollPane2.setBounds(920, 80, 250, 620);
         fondo.add(scrollPane2);
 
-        // Configuración de ObjectDB
-        emf = Persistence.createEntityManagerFactory(odbs);
-        em = emf.createEntityManager();
-
         // Configuración de ventana
         setSize(1230, 820); // Tamano
         setVisible(true); // Visible
         setResizable(false); // No redimensionable
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar al cerrar la ventana
         setLocationRelativeTo(null); // Centrar la ventana en la pantalla
-        // Actualizar
+        // Actualizar la lista de materiales
         actualizarComboBoxMateriales(); // Actualizar el JComboBox
         actualizarTextoETF(); // Actualizar el JTextArea de existencias
 //---------------------------------------- Hasta aqui ----------------------------------------
@@ -456,7 +456,7 @@ public class GestionExistencias extends JFrame
         }
     }
 
-    // Funciones con texto generico para facilitar la modificacion de los mensajes
+    // Ventanas con texto generico para facilitar la modificacion de los mensajes
     private void rellenarCampos()
     {
         JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
