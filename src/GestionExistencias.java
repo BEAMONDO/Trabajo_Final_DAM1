@@ -1,6 +1,3 @@
-// Para que se vean las imagenes hay que cambiar la ruta
-// de las imagenes, se encuentran en la linea 40 y 45
-//
 // Creado y pensado por BEAMONDO
 //
 // El codigo se encuentra publico aqui:
@@ -14,41 +11,46 @@ import java.io.*;
 import java.sql.*;
 import java.util.List;
 
-public class GestionExistencias extends JFrame 
+public class GestionExistencias
 {
     private EntityManagerFactory emf;
     private EntityManager em;
-    private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf;
-    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, BOTONPRUEBAS;
+    private Connection cmysql = null;
+    private Statement smysql = null;
+    private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf, uloginf, cloginf;
+    private JButton rb, ab, bb, eb, editb, ncb, bhb, eteb, accederb, BOTONPRUEBAS;
     private JTextArea hmf, etf;
     private JMenuItem ex, hi, ce, cs, tom, tmo, tot, tmt, tto, ttm;
     private JComboBox<Materiales> naf, nbf, nef, neditf, nof;
+    private JFrame ventana = new JFrame(), ventanalogin = new JFrame();
     private String usuarioMySQL = "root", contraseñaMySQL = "";
     private final String msqls="jdbc:mysql://localhost/GestionExistencias";
     private final String odbs="$objectdb/db/GestionExistencias.odb";
-    private final String txtfile="Trabajo_Final_Programacion/Materiales.txt";
+    private final String txtfile="Pruebas_Trabajo_Final/Materiales.txt";
 
     public static void main(String args[]) 
     {
         GestionExistencias aplicacion = new GestionExistencias();
-        aplicacion.setVisible(true);
+        
     }
 
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Imagenes fondo = new Imagenes("Trabajo_Final_Programacion/imagenes/fondo.jpg");
+        Imagenes fondo = new Imagenes("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
         fondo.setLayout(null);
-        setContentPane(fondo);
+        ventana.setContentPane(fondo);
+        ventana.setVisible(false);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("Trabajo_Final_Programacion/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
 
         // Configuración de MySQL
-        try{
+        try
+        {
             //Abrir la conexión con MySQL
             System.out.println("Conectando con la base de datos MySQL...");
             DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
@@ -63,11 +65,41 @@ public class GestionExistencias extends JFrame
         // Configuración de ObjectDB
         emf = Persistence.createEntityManagerFactory(odbs);
         em = emf.createEntityManager();
+//---------------------------------------- Ventana login ----------------------------------------
+//---------------------------------------- Desde aqui ----------------------------------------
+        JPanel loginPanel = new JPanel(null);
+        ventanalogin.add(new JLabel("Usuario:")).setBounds(40, 20, 100, 25);
+        uloginf = new JTextField();
+        uloginf.setBounds(150, 20, 200, 25);
+        loginPanel.add(uloginf);
+        ventanalogin.add(new JLabel("Contraseña:")).setBounds(40, 60, 100, 25);
+        cloginf = new JTextField();
+        cloginf.setBounds(150, 60, 200, 25);
+        loginPanel.add(cloginf);
+        accederb = new JButton("Acceder");
+        accederb.setBounds(150, 100, 100, 25);
+        loginPanel.add(accederb);
+
+        accederb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanalogin.setVisible(false);
+                ventana.setVisible(true);
+            }
+        });
+        
+        ventanalogin.getContentPane().add(loginPanel);
+        ventanalogin.setTitle("Login");
+        ventanalogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventanalogin.setSize(400, 200); // Tamaño de la ventana
+        ventanalogin.setLocationRelativeTo(null);
+        ventanalogin.setVisible(true);
+//---------------------------------------- Hasta aqui ----------------------------------------
+
 //---------------------------------------- Menu superior ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Crear una barra de menú        
         JMenuBar jmb = new JMenuBar();
-        setJMenuBar(jmb);
+        ventana.setJMenuBar(jmb);
 
         // Crear un menú
         JMenu menuOpciones = new JMenu("Opciones");
@@ -111,7 +143,7 @@ public class GestionExistencias extends JFrame
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         BOTONPRUEBAS = new JButton("BOTON PARA PRUEBAS");
         BOTONPRUEBAS.setBounds(590, 500, 250, 25);
-        fondo.add(BOTONPRUEBAS);
+        ventana.add(BOTONPRUEBAS);
         BOTONPRUEBAS.addActionListener(new ActionListener() 
         {
             public void actionPerformed(ActionEvent e) 
@@ -123,8 +155,8 @@ public class GestionExistencias extends JFrame
 //---------------------------------------- Gui principal ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
-        setTitle("Gestión de Existencias - by DBSueños");
-        setLayout(null);
+        ventana.setTitle("Gestión de Existencias - by DBSueños");
+        ventana.setLayout(null);
 
         // Variables para facilitar la modificacion del tamaño y posicion de los componentes
         int alturaBoton = 200;
@@ -134,139 +166,138 @@ public class GestionExistencias extends JFrame
         int altoCampos = 25;
 
         //Crear contenedores y elementos
-        add(new JLabel("Registrar material: ")).setBounds(60, 40, largoTextos, altoCampos); // Establecer tamaño
+        ventana.add(new JLabel("Registrar material: ")).setBounds(60, 40, largoTextos, altoCampos); // Establecer tamaño
         JLabel ir = new JLabel(iconoReescalado); // Crear y configurar el JLabel para mostrar la imagen reescalada
         ir.setBounds(240, 40, 20, 20); // Establecer posición y tamaño de la imagen
-        fondo.add(ir); // Agregar la imagen
-        add(new JLabel("Nombre: ")).setBounds(60, 80, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
+        ventana.add(ir); // Agregar la imagen
+        ventana.add(new JLabel("Nombre: ")).setBounds(60, 80, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         nrf = new JTextField(); // Crear un campo
         nrf.setBounds(130, 80, 170, altoCampos); // Establecer posición y tamaño
-        fondo.add(nrf); // Agregarlo
-        add(new JLabel("Cantidad: ")).setBounds(60, 120, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
+        ventana.add(nrf); // Agregarlo
+        ventana.add(new JLabel("Cantidad: ")).setBounds(60, 120, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         crf = new JTextField(); // Crear un campo
         crf.setBounds(150, 120, 150, altoCampos);  // Establecer posición y tamaño
-        fondo.add(crf); // Agregarlo
-        add(new JLabel("Precio unidad: ")).setBounds(60, 160, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
+        ventana.add(crf); // Agregarlo
+        ventana.add(new JLabel("Precio unidad: ")).setBounds(60, 160, largoTextos, altoCampos); // Crear texto y establecer posición y tamaño
         ppurf = new JTextField(); // Crear un campo
         ppurf.setBounds(170, 160, 130, altoCampos); // Establecer posición y tamaño
-        fondo.add(ppurf); // Agregarlo
+        ventana.add(ppurf); // Agregarlo
         rb = new JButton("Registrar"); // Crear un botón
         rb.setBounds(130, alturaBoton, largoBoton, altoCampos); // Establecer posición y tamaño
-        fondo.add(rb); // Agregarlo
+        ventana.add(rb); // Agregarlo
 
-        add(new JLabel("Añadir material: ")).setBounds(340, 40, largoTextos, altoCampos);
+        ventana.add(new JLabel("Añadir material: ")).setBounds(340, 40, largoTextos, altoCampos);
         JLabel ia = new JLabel(iconoReescalado);
         ia.setBounds(520, 40, 20, 20);
-        fondo.add(ia);
-        add(new JLabel("Nombre: ")).setBounds(340, 80, largoTextos, altoCampos);
+        ventana.add(ia);
+        ventana.add(new JLabel("Nombre: ")).setBounds(340, 80, largoTextos, altoCampos);
         naf = new JComboBox<>(); // Crear lista de almacen de elementos registrados
         naf.setBounds(410, 80, 170, altoCampos);
-        fondo.add(naf);
-        add(new JLabel("Cantidad: ")).setBounds(340, 120, largoTextos, altoCampos);
+        ventana.add(naf);
+        ventana.add(new JLabel("Cantidad: ")).setBounds(340, 120, largoTextos, altoCampos);
         caf = new JTextField();
         caf.setBounds(430, 120, 150, altoCampos);
-        fondo.add(caf);
+        ventana.add(caf);
         ab = new JButton("Añadir");
         ab.setBounds(410, alturaBoton, largoBoton, altoCampos);
-        fondo.add(ab);
+        ventana.add(ab);
 
-        add(new JLabel("Editar material: ")).setBounds(620, 40, largoTextos, 25);
+        ventana.add(new JLabel("Editar material: ")).setBounds(620, 40, largoTextos, 25);
         JLabel iedit = new JLabel(iconoReescalado);
         iedit.setBounds(800, 40, 20, 20);
-        fondo.add(iedit);
-        add(new JLabel("Nombre: ")).setBounds(620, 80, largoTextos, altoCampos);
+        ventana.add(iedit);
+        ventana.add(new JLabel("Nombre: ")).setBounds(620, 80, largoTextos, altoCampos);
         neditf = new JComboBox<>();
         neditf.setBounds(690, 80, 170, altoCampos);
-        fondo.add(neditf);
-        add(new JLabel("Cantidad: ")).setBounds(620, 120, largoTextos, altoCampos);
+        ventana.add(neditf);
+        ventana.add(new JLabel("Cantidad: ")).setBounds(620, 120, largoTextos, altoCampos);
         ceditf = new JTextField();
         ceditf.setBounds(710, 120, 150, altoCampos);
-        fondo.add(ceditf);
-        add(new JLabel("Precio unidad: ")).setBounds(620, 160, largoTextos, altoCampos);
+        ventana.add(ceditf);
+        ventana.add(new JLabel("Precio unidad: ")).setBounds(620, 160, largoTextos, altoCampos);
         ppueditf = new JTextField();
         ppueditf.setBounds(730, 160, 130, altoCampos);
-        fondo.add(ppueditf);
+        ventana.add(ppueditf);
         editb = new JButton("Editar");
         editb.setBounds(690, alturaBoton, largoBoton, altoCampos);
-        fondo.add(editb);
+        ventana.add(editb);
 
-        add(new JLabel("Retirar material: ")).setBounds(60, 280, largoTextos, 25);
+        ventana.add(new JLabel("Retirar material: ")).setBounds(60, 280, largoTextos, 25);
         JLabel ib = new JLabel(iconoReescalado); 
         ib.setBounds(240, 280, 20, 20);
-        fondo.add(ib);
-        add(new JLabel("Nombre: ")).setBounds(60, 320, largoTextos, altoCampos);
+        ventana.add(ib);
+        ventana.add(new JLabel("Nombre: ")).setBounds(60, 320, largoTextos, altoCampos);
         nbf = new JComboBox<>();
         nbf.setBounds(130, 320, 170, altoCampos);
-        fondo.add(nbf);
-        add(new JLabel("Cantidad: ")).setBounds(60, 360, largoTextos, altoCampos);
+        ventana.add(nbf);
+        ventana.add(new JLabel("Cantidad: ")).setBounds(60, 360, largoTextos, altoCampos);
         cbf = new JTextField();
         cbf.setBounds(150, 360, 150, altoCampos);
-        fondo.add(cbf);
+        ventana.add(cbf);
         bb = new JButton("Retirar");
         bb.setBounds(130, alturaBoton2, largoBoton, altoCampos);
-        fondo.add(bb);
+        ventana.add(bb);
 
-        add(new JLabel("Eliminar material: ")).setBounds(340, 280, largoTextos, altoCampos);
+        ventana.add(new JLabel("Eliminar material: ")).setBounds(340, 280, largoTextos, altoCampos);
         JLabel ie = new JLabel(iconoReescalado); 
         ie.setBounds(520, 280, 20, 20);
-        fondo.add(ie);
-        add(new JLabel("Nombre: ")).setBounds(340, 320, largoTextos, altoCampos);
+        ventana.add(ie);
+        ventana.add(new JLabel("Nombre: ")).setBounds(340, 320, largoTextos, altoCampos);
         nef = new JComboBox<>();
         nef.setBounds(410, 320, 170, altoCampos);
-        fondo.add(nef);
+        ventana.add(nef);
         eb = new JButton("Eliminar");
         eb.setBounds(410, alturaBoton2, largoBoton, altoCampos);
-        fondo.add(eb);
+        ventana.add(eb);
 
-        add(new JLabel("Modificar nombre: ")).setBounds(620, 280, largoTextos, altoCampos);
+        ventana.add(new JLabel("Modificar nombre: ")).setBounds(620, 280, largoTextos, altoCampos);
         JLabel im = new JLabel(iconoReescalado); 
         im.setBounds(800, 280, 20, 20);
-        fondo.add(im);
-        add(new JLabel("Actual: ")).setBounds(620, 320, largoTextos, altoCampos);
+        ventana.add(im);
+        ventana.add(new JLabel("Actual: ")).setBounds(620, 320, largoTextos, altoCampos);
         nof = new JComboBox<>();
         nof.setBounds(690, 320, 170, altoCampos);
-        fondo.add(nof);
-        add(new JLabel("Nuevo: ")).setBounds(620, 360, largoTextos, altoCampos);
+        ventana.add(nof);
+        ventana.add(new JLabel("Nuevo: ")).setBounds(620, 360, largoTextos, altoCampos);
         ncf = new JTextField();
         ncf.setBounds(690, 360, 170, altoCampos);
-        fondo.add(ncf);
+        ventana.add(ncf);
         ncb = new JButton("Modificar");
         ncb.setBounds(690, alturaBoton2, largoBoton, altoCampos);
-        fondo.add(ncb);
+        ventana.add(ncb);
 
         // Crear area de texto
-        add(new JLabel("Historial de modificaciones: ")).setBounds(60, 500, largoTextos, altoCampos);
+        ventana.add(new JLabel("Historial de modificaciones: ")).setBounds(60, 500, largoTextos, altoCampos);
         JLabel ihm = new JLabel(iconoReescalado);
         ihm.setBounds(300, 500, 20, 20);
-        fondo.add(ihm);
+        ventana.add(ihm);
         hmf = new JTextArea(); // Crear un area
         hmf.setEditable(false); // Que no sea editable
         JScrollPane scrollPane = new JScrollPane(hmf); // Añadir scroll
         scrollPane.setBounds(60, 540, 800, 160); // Establecer posición y tamaño
-        fondo.add(scrollPane); // Agregarlo
+        ventana.add(scrollPane); // Agregarlo
         bhb = new JButton("Borrar el historial");
         bhb.setBounds(350, 500, largoBoton+80, altoCampos);
-        fondo.add(bhb);
+        ventana.add(bhb);
         eteb = new JButton("Eliminar todos los materiales");
         eteb.setBounds(590, 500, largoBoton+150, altoCampos);
-        //fondo.add(eteb);
+        //ventana.add(eteb);
 
-        add(new JLabel("Materiales disponibles: ")).setBounds(920, 40, largoTextos, altoCampos);
+        ventana.add(new JLabel("Materiales disponibles: ")).setBounds(920, 40, largoTextos, altoCampos);
         JLabel ied = new JLabel(iconoReescalado);
         ied.setBounds(1140, 40, 20, 20);
-        fondo.add(ied);
+        ventana.add(ied);
         etf = new JTextArea();
         etf.setEditable(false);
         JScrollPane scrollPane2 = new JScrollPane(etf);
         scrollPane2.setBounds(920, 80, 250, 620);
-        fondo.add(scrollPane2);
+        ventana.add(scrollPane2);
 
         // Configuración de ventana
-        setSize(1230, 820); // Tamano
-        setVisible(true); // Visible
-        setResizable(false); // No redimensionable
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar al cerrar la ventana
-        setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+        ventana.setSize(1230, 820); // Tamano de la ventana
+        ventana.setResizable(false); // No redimensionable
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar al cerrar la ventana
+        ventana.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
         // Actualizar la lista de materiales
         actualizarComboBoxMateriales(); // Actualizar el JComboBox
         actualizarTextoETF(); // Actualizar el JTextArea de existencias
@@ -460,23 +491,23 @@ public class GestionExistencias extends JFrame
     // Ventanas con texto generico para facilitar la modificacion de los mensajes
     private void rellenarCampos()
     {
-        JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(ventana, "Por favor, rellena todos los campos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
     }
     private void rellenarCamposEditar()
     {
-        JOptionPane.showMessageDialog(this, "Por favor, rellena la cantidad, el precio o los dos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(ventana, "Por favor, rellena la cantidad, el precio o los dos.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
     }
     private void cantidadYPrecioIncorrecto()
     {
-        JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para la cantidad y para el precio.", "Cantidad o Precio Incorrecto", JOptionPane.WARNING_MESSAGE);    
+        JOptionPane.showMessageDialog(ventana, "Por favor, introduce un número válido para la cantidad y para el precio.", "Cantidad o Precio Incorrecto", JOptionPane.WARNING_MESSAGE);    
     }
     private void cantidadIncorrecto()
     {
-        JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para la cantidad.", "Cantidad Incorrecta", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(ventana, "Por favor, introduce un número válido para la cantidad.", "Cantidad Incorrecta", JOptionPane.WARNING_MESSAGE);
     }
     private void precioIncorrecto()
     {
-        JOptionPane.showMessageDialog(this, "Por favor, introduce un número válido para el precio.", "Precio Incorrecto", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(ventana, "Por favor, introduce un número válido para el precio.", "Precio Incorrecto", JOptionPane.WARNING_MESSAGE);
     }
 //---------------------------------------- Hasta aqui ----------------------------------------
 
@@ -506,7 +537,7 @@ public class GestionExistencias extends JFrame
             List<Materiales> results = query.getResultList();
             if (!results.isEmpty()) 
             {
-                JOptionPane.showMessageDialog(this, "El material ya existe.");
+                JOptionPane.showMessageDialog(ventana, "El material ya existe.");
                 return;
             }
             Materiales material = new Materiales(nombre, cantidadAnnadir, precioUnidadRegistrar);
@@ -737,7 +768,7 @@ public class GestionExistencias extends JFrame
             }
             if (cantidadBorrar > materialSeleccionado.cantidad) 
             {
-                JOptionPane.showMessageDialog(this, "No puedes retirar más cantidad de la que tienes.");
+                JOptionPane.showMessageDialog(ventana, "No puedes retirar más cantidad de la que tienes.");
                 return;
             }
             em.getTransaction().begin();
@@ -768,10 +799,10 @@ public class GestionExistencias extends JFrame
         Materiales materialSeleccionado = (Materiales) nef.getSelectedItem();
         if (materialSeleccionado == null) 
         {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un material.", "Material Incorrecto", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(ventana, "Por favor, seleccione un material.", "Material Incorrecto", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int opcion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar " + materialSeleccionado.getNombre() + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int opcion = JOptionPane.showConfirmDialog(ventana, "¿Estás seguro de que deseas eliminar " + materialSeleccionado.getNombre() + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (opcion == JOptionPane.YES_OPTION) 
         {
             em.getTransaction().begin();
@@ -807,7 +838,7 @@ public class GestionExistencias extends JFrame
         long count = countQuery.getSingleResult();
         if (count > 0) 
         {
-            JOptionPane.showMessageDialog(this, "El nombre '" + nuevoNombre + "' ya está en uso.", "Nombre duplicado", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(ventana, "El nombre '" + nuevoNombre + "' ya está en uso.", "Nombre duplicado", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String nombreAnterior = materialSeleccionado.getNombre(); // Guardar el nombre anterior
@@ -890,29 +921,22 @@ class EliminarExistenciasMenu implements ActionListener
     @SuppressWarnings("unchecked")
     private void transferirMaterialesObjectDBtoMySQL()
     {
-        // Variables para la conexión a ObjectDB
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
-        EntityManager em = emf.createEntityManager();
-        
-        Connection conexionMySQL = null;
-        Statement sentenciaMySQL = null;
-        
         try
         {
             // Conexión a MySQL
-            conexionMySQL = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
+            cmysql = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
             
             // Eliminacion de materiales en MySQL
-            sentenciaMySQL = conexionMySQL.createStatement();
+            smysql = cmysql.createStatement();
             String sqlDelete = "DELETE FROM Materiales";
-            sentenciaMySQL.executeUpdate(sqlDelete);
+            smysql.executeUpdate(sqlDelete);
 
             // Consulta de materiales en ObjectDB
             Query consulta = em.createQuery("SELECT m FROM Materiales m", Materiales.class);
             List<Materiales> materiales = consulta.getResultList();
 
             // Inserción de materiales en MySQL
-            sentenciaMySQL = conexionMySQL.createStatement();
+            smysql = cmysql.createStatement();
             for (Materiales material : materiales)
             {
                 String nombre = material.getNombre();
@@ -920,14 +944,12 @@ class EliminarExistenciasMenu implements ActionListener
                 double precioUnidad = material.getPrecioUnidad();
                 String sqlInsert = "INSERT INTO Materiales (nombre, cantidad, precioUnidad) VALUES ('" +
                                     nombre + "', " + cantidad + ", " + precioUnidad + ")";
-                sentenciaMySQL.executeUpdate(sqlInsert);
+                smysql.executeUpdate(sqlInsert);
             }
             
-            sentenciaMySQL.close();
-            conexionMySQL.close();
-            em.close();
-            emf.close();
-
+            smysql.close();
+            cmysql.close();
+            //JOptionPane.showMessageDialog(null, "Datos cargados desde ObjectDB a la base de datos MySQL", "Info", JOptionPane.INFORMATION_MESSAGE);
             //System.out.println("Se transfirieron " + materialesTransferidos + " materiales de ObjectDB a MySQL.");
         }
         catch (SQLException e)
@@ -952,23 +974,15 @@ class EliminarExistenciasMenu implements ActionListener
 //---------------------------------------- Desde aqui ----------------------------------------
     private void transferirMaterialesMySQLtoObjectDB()
     {
-        // Variables para la conexión a MySQL
-        Connection conexionMySQL = null;
-        Statement sentenciaMySQL = null;
-
-        // Variables para la conexión a ObjectDB
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
-        EntityManager em = emf.createEntityManager();
-
         try
         {
             // Conexión a MySQL
-            conexionMySQL = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
+            cmysql = DriverManager.getConnection(msqls, usuarioMySQL, contraseñaMySQL);
 
             // Consulta de materiales en MySQL
-            sentenciaMySQL = conexionMySQL.createStatement();
+            smysql = cmysql.createStatement();
             String sqlSelect = "SELECT * FROM Materiales";
-            ResultSet resultado = sentenciaMySQL.executeQuery(sqlSelect);
+            ResultSet resultado = smysql.executeQuery(sqlSelect);
 
             // Eliminar todos los materiales existentes en ObjectDB
             em.getTransaction().begin();
@@ -990,12 +1004,11 @@ class EliminarExistenciasMenu implements ActionListener
 
             // Cierre de recursos
             resultado.close();
-            sentenciaMySQL.close();
-            conexionMySQL.close();
-            em.close();
-            emf.close();
+            smysql.close();
+            cmysql.close();
             actualizarComboBoxMateriales();
             actualizarTextoETF();
+            JOptionPane.showMessageDialog(null, "Datos cargados desde MySQL a la base de datos ObjectDB", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (SQLException e)
         {
@@ -1177,9 +1190,6 @@ class EliminarExistenciasMenu implements ActionListener
     {
         try 
         {
-            // Establecer la conexión con ObjectDB
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory(odbs);
-            EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
 
             // Crear un lector de archivos para leer el archivo de texto
@@ -1212,8 +1222,6 @@ class EliminarExistenciasMenu implements ActionListener
 
             // Cerrar recursos
             br.close();
-            em.close();
-            emf.close();
 
             actualizarTextoETF();
             actualizarComboBoxMateriales();
