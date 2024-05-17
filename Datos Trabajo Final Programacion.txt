@@ -1,0 +1,89 @@
+Trabajo Final 3ev Programacion
+
+
+HORAS
+27 abr 4h
+28 abr 4h
+29 abr 3h
+30 abr 4h
+
+01 may 8h
+02 may 4h
+03 may 6h
+10 may 4h compatibilidad con MySQL, copiar datos de ObjectDB a MySQL
+12 may 2h copia seguridad tabla MySQL
+13 may 3h copiar datos a TXT y leer datos de TXT en ObjectDB y MySQL
+14 may 3h menu superior transferir, copiar datos de MySQL a ObjectDB
+15 may 2h añadir ventana login, preparar Empleados para login y register
+16 may 1h añadir tabla Empleados para login en MySQL
+17 may 3h mover funciones principales a archivos aparte para facilitar la lectura
+
+TOTAL 51h
+
+
+
+
+
+VARIABLES
+nrf: nombreregistrarfield
+crf: cantidadregistrarfield
+ppurf: precioporunidadregistrarfield
+caf: cantidadannadirfield
+cbf: cantidadborrarfield
+ceditf: cantidadeditarfield
+ppueditf: precioporunidadeditarfield
+ncf: nombrecambiadofield
+
+rb: registrarboton
+ab: annadirboton
+bb: borrarboton
+eb: eliminarboton
+editb: editarboton
+ncb: nombrecambiadoboton
+bhb: borrarhistorialboton
+eteb: eliminartodasexistenciasboton
+
+hmf: historialmodificacionfuncion
+etf: existenciastotalesfuncion
+
+ex: existencias
+hi: historial
+ce: cerrar
+cs: copiaseguridad
+tot: transferirobjectdbtxt
+tmt: transferirmysqltxt
+tto: transferirtxtobjectdb
+ttm: transferirtxtmysql
+
+naf: nombreannadirfield
+nbf: nombreborrarfield
+nef: nombreeliminarfield
+neditf: nombreeditarfield
+nof: nombreoriginalfield
+
+
+
+IMAGENES
+ir: infoRegistrar
+ia: infoAnnadir
+ie: infoEditar
+ib: infoBorrar
+iedit: infoEliminar
+im: infoModificar
+ihm: infoHistorialModificaciones
+ied: infoExistenciasDisponibles
+
+
+
+FUNCIONES
+txt - mysql
+mysql - txt
+mysql - objectdb
+
+txt - objectdb
+objectdb - txt
+objectdb - mysql
+
+copia de tabla mysql
+
+login mysql
