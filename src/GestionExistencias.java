@@ -502,7 +502,6 @@ public class GestionExistencias
         }
     }
 
-
     // Ventanas con texto generico para facilitar la modificacion de los mensajes
     public void rellenarCampos()
     {
@@ -1060,7 +1059,7 @@ class EliminarExistenciasMenu implements ActionListener
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//---------------------------------------- Funcion login MySQL, en la clase MySQLLoginManager ----------------------------------------
+//---------------------------------------- Funcion login MySQL, en la clase LoginManagerMySQL ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void manejadorLoginMySQL() {
         LoginManagerMySQL loginManagerMySQL = new LoginManagerMySQL(msqls, usuarioMySQL, contraseñaMySQL);
@@ -1078,7 +1077,7 @@ class EliminarExistenciasMenu implements ActionListener
     }
 //---------------------------------------- Hasta aqui ----------------------------------------*/
 
-/*//---------------------------------------- Funcion login ObjectDB, en la clase ObjectDBLoginManager ----------------------------------------
+/*//---------------------------------------- Funcion login ObjectDB, en la clase LoginManagerObjectDB ----------------------------------------
 //---------------------------------------- Desde aqui ----------------------------------------
     private void manejadorLoginObjectDB() {
         LoginManagerObjectDB loginManagerObjectDB = new ObjectDBLoginManager(emf);
