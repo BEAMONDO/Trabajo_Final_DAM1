@@ -16,8 +16,9 @@ HORAS
 14 may 3h menu superior transferir, copiar datos de MySQL a ObjectDB
 15 may 2h añadir ventana login, preparar Empleados para login y register
 16 may 1h añadir tabla Empleados para login en MySQL
-17 may 3h mover funciones principales a archivos aparte
-18 may 2h mover funciones transferir y login a archivos aparte
+17 may 3h mover metodos principales a archivos aparte
+18 may 2h mover metodos transferir y login a archivos aparte
+19 may 2h añadir ventana registrar, crear metodos registrar y eliminar
 
 TOTAL 53h
 
