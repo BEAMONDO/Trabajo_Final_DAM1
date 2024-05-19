@@ -28,6 +28,7 @@ public class GestionExistencias
     public static void main(String args[]) 
     {
         GestionExistencias aplicacion = new GestionExistencias();
+        aplicacion.ventana.setVisible(false);
     }
 
     public GestionExistencias() 
@@ -534,19 +535,19 @@ public class GestionExistencias
         }    
     }
 
-    // Agregar materiales existentes al area de existencias disponibles
+    // Agregar empleados al area de empleados
     public void agregarTextoTETF(String texto) 
     {
         tetf.append(texto + "\n");
     }
 
-    // Actualizar el JTextArea con la lista de existencias
+    // Actualizar el JTextArea con la lista de empleados
     public void actualizarTextoTETF() 
     {
         TypedQuery<Empleados> query = em.createQuery("SELECT e FROM Empleados e ORDER BY e.usuario ASC", Empleados.class);
         List<Empleados> empleados = query.getResultList();
         tetf.setText(""); // Borrar el contenido actual de tetf
-        // Escribir todos los materiales existentes
+        // Escribir todos los empleados existentes
         for (Empleados empleado : empleados) 
         {
             agregarTextoTETF(" Usuario: " + empleado.usuario);
