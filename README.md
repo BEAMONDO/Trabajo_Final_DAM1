@@ -3,3 +3,5 @@
 Queda prohibida la distribucion del codigo sin permiso del propietario.
 En caso de que el propietario de permiso, es obligatorio indicar
 la procedencia del codigo o en nombre del autor en alguna parte visible.
+
+El usuario y la contraseña por defecto son "admin, admin" respectivamente.
