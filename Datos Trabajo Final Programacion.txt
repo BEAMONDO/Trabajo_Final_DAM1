@@ -18,9 +18,9 @@ HORAS
 16 may 1h añadir tabla Empleados para login en MySQL
 17 may 3h mover metodos principales a archivos aparte
 18 may 2h mover metodos transferir y login a archivos aparte
-19 may 2h añadir ventana registrar, crear metodos registrar y eliminar
+19 may 3h añadir ventana registrar, crear metodos registrar y eliminar
 
-TOTAL 53h
+TOTAL 54h
 
 
 
