@@ -23,7 +23,7 @@ public class GestionExistencias
     private String usuarioMySQL = "root", contraseñaMySQL = "";
     private final String msqls="jdbc:mysql://localhost/GestionExistencias";
     private final String odbs="$objectdb/db/GestionExistencias.odb";
-    private final String txtfile="Pruebas_Trabajo_Final/Materiales.txt";
+    private final String txtfile="Trabajo_Final_Programacion_DavidBeamonde/Materiales.txt";
 
     public static void main(String args[]) 
     {
@@ -34,14 +34,14 @@ public class GestionExistencias
     public GestionExistencias() 
     {
         // Establecer imagen de fondo
-        Fondo fondo = new Fondo("Pruebas_Trabajo_Final/imagenes/fondo.jpg");
+        Fondo fondo = new Fondo("Trabajo_Final_Programacion_DavidBeamonde/imagenes/fondo.jpg");
         fondo.setLayout(null);
         ventana = new JFrame();
         ventana.setContentPane(fondo);
         ventana.setVisible(false);
 
         // Cargar imagen de informacion
-        ImageIcon iconoOriginal = new ImageIcon("Pruebas_Trabajo_Final/imagenes/info.png");
+        ImageIcon iconoOriginal = new ImageIcon("Trabajo_Final_Programacion_DavidBeamonde/imagenes/info.png");
         Image imagenOriginal = iconoOriginal.getImage(); 
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
@@ -512,7 +512,7 @@ public class GestionExistencias
             agregarTextoETF(" Nombre: " + material.nombre);
             agregarTextoETF(" Cantidad: " + material.cantidad);
             agregarTextoETF(" Precio: " + material.precioUnidad);
-            agregarTextoETF("---------------------------------------\n");
+            agregarTextoETF("---------------------------------------");
         }    
     }
 
