@@ -56,15 +56,19 @@ ebm: eliminarbobjectdb
 
 hmf: historialmodificacionfuncion
 etf: existenciastotalesfuncion
+tetf
 
 ex: existencias
 hi: historial
 ce: cerrar
-cs: copiaseguridad
+
+tom: transferirobjectdbmysql
+tmo: transferirmysqlobjectdb
 tot: transferirobjectdbtxt
 tmt: transferirmysqltxt
 tto: transferirtxtobjectdb
 ttm: transferirtxtmysql
+empmen: empleadomenu
 
 naf: nombreannadirfield
 nbf: nombreborrarfield
@@ -95,6 +99,7 @@ txt - objectdb
 objectdb - txt
 objectdb - mysql
 
-copia de tabla mysql
-
 login mysql
+login objectdb
+registrar mysql
+registrar objectdb
