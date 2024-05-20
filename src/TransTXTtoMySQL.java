@@ -69,3 +69,5 @@ public class TransTXTtoMySQL
         }
     }
 }
+// https://es.stackoverflow.com/questions/45846/c%C3%B3mo-separar-un-string-en-java-c%C3%B3mo-utilizar-split
+// https://es.stackoverflow.com/questions/193571/insertar-por-lote-registros-txt-a-mysql-con-java
