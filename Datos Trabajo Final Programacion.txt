@@ -35,6 +35,10 @@ cbf: cantidadborrarfield
 ceditf: cantidadeditarfield
 ppueditf: precioporunidadeditarfield
 ncf: nombrecambiadofield
+ulogf: usuariologinfield
+clogf: contraseñaloginfield
+uregf: usuarioregistrarfield
+cregf: contraseñaregistrarfield
 
 rb: registrarboton
 ab: annadirboton
@@ -43,7 +47,12 @@ eb: eliminarboton
 editb: editarboton
 ncb: nombrecambiadoboton
 bhb: borrarhistorialboton
-eteb: eliminartodasexistenciasboton
+lbm: loginbotonmysql
+lbo: loginbobjectdb
+rbm: registrarbmysql
+rbo: registrarbobjectdb
+ebo: eliminarbobjectdb
+ebm: eliminarbobjectdb
 
 hmf: historialmodificacionfuncion
 etf: existenciastotalesfuncion
