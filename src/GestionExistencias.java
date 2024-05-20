@@ -915,3 +915,4 @@ public class GestionExistencias
         }
     }
 }
+// https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html
