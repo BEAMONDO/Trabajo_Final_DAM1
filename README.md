@@ -8,6 +8,7 @@ la procedencia del codigo o en nombre del autor en alguna parte visible.
 
 MySQL
 usuario "root", contraseña ""
+
 create database GestionExistencias;
 
 El usuario, la contraseña y el nombre de la base de datos de MySQL se puede cambiar en la clase GestionExistencias.
@@ -21,6 +22,7 @@ El nombre de la base de datos de ObjectDB se puede cambiar en la clase GestionEx
 =======================================================================================
 
 login en aplicacion
+
 usuario "admin", contraseña "admin"
 
 =======================================================================================
