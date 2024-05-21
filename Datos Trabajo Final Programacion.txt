@@ -2,14 +2,14 @@ Trabajo Final 3ev Programacion
 
 
 HORAS
-27 abr 4h
-28 abr 4h
-29 abr 3h
-30 abr 4h
+27 abr 4h crear interfaz grafica de aplicacion y registrar materiales
+28 abr 4h añadir metodos para añadir y eliminar materiales
+29 abr 3h añadir metodos para retirar y editar materiales
+30 abr 4h añadir metodos para cambiar nombre de materiales
 
-01 may 8h
-02 may 4h
-03 may 6h
+01 may 8h cambiar interfaz grafica por otra mas intuitiva y mas ordenada
+02 may 4h añadir imagenes que muestran informacion al hacer click en ellas
+03 may 6h añadir mensajes genericos, historial de modificaciones y existencias
 10 may 4h compatibilidad con MySQL, copiar datos de ObjectDB a MySQL
 12 may 2h copia seguridad tabla MySQL
 13 may 3h copiar datos a TXT y leer datos de TXT en ObjectDB y MySQL
