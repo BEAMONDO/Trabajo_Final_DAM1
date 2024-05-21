@@ -73,7 +73,7 @@ public class GestionExistencias
         ulogf.setBounds(150, 20, 200, 25);
         loginPanel.add(ulogf);
         ventanalogin.add(new JLabel("Contraseña:")).setBounds(40, 60, 100, 25);
-        clogf = new JTextField();
+        clogf = new JPasswordField();
         clogf.setBounds(150, 60, 200, 25);
         loginPanel.add(clogf);
 
