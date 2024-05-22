@@ -180,7 +180,7 @@ public class GestionExistencias
         
 //---------------------------------------- Gui principal ----------------------------------------
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
-        ventana.setTitle("Gestión de Existencias - by DBSueños");
+        ventana.setTitle("StockManager - by DBSueños");
         ventana.setLayout(null);
 
         // Variables para facilitar la modificacion del tamaño y posicion de los componentes
