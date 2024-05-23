@@ -9,9 +9,9 @@ y ObjectDB se puede cambiar en la clase GestionExistencias.
 
 =======================================================================================
 
-login en aplicacion
+Login en aplicación
 
-usuario "admin", contraseña "admin"
+Usuario "admin", Contraseña "admin"
 
 =======================================================================================
 
