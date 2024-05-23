@@ -19,11 +19,11 @@ HORAS
 17 may 3h mover metodos principales a archivos aparte
 18 may 2h mover metodos transferir y login a archivos aparte
 19 may 3h añadir ventana registrar, crear metodos registrar y eliminar
-23 may 1h arreglar bugs de mensajes y añadir cosas que faltan
+23 may 2h arreglar bugs de mensajes y añadir cosas que faltan
 
-TOTAL 55h
+TOTAL 56h
 
-2400 lineas, 21 archivos
+2500 lineas, 21 archivos
 
 
 
