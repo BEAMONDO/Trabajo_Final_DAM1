@@ -49,6 +49,12 @@ public class GestionExistencias
         Image imagenReescalada = imagenOriginal.getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Reescalar la imagen al tamaño deseado
         ImageIcon iconoReescalado = new ImageIcon(imagenReescalada); // Crear un nuevo ImageIcon con la imagen reescalada
 
+        // Cargar imagen de logo
+        ImageIcon logo = new ImageIcon("imagenes/logo.png");
+        Image logoOriginal = logo.getImage(); 
+        Image logoReescalado = logoOriginal.getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        ImageIcon logoFinal = new ImageIcon(logoReescalado);
+
         // Configuración de MySQL
         try{
             // Abrir la conexión con MySQL
@@ -257,6 +263,10 @@ public class GestionExistencias
         // Establecer el título y layout nulo para un posicionamiento absoluto de los componentes en la ventana
         ventana.setTitle("StockManager - by DBSueños");
         ventana.setLayout(null);
+
+        JLabel lf = new JLabel(logoFinal); // Crear y configurar el JLabel para mostrar la imagen reescalada
+        lf.setBounds(550, 410, 120, 120);
+        ventana.add(lf);
 
         // Variables para facilitar la modificacion del tamaño y posicion de los componentes
         int alturaBoton = 200;
