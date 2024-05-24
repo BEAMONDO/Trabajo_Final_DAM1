@@ -12,6 +12,13 @@ import java.util.List;
 
 public class GestionExistencias
 {
+    String nombreBaseDatos = "GestionExistencias"; // Nombre de la base de datos
+    private final String txtfile="Materiales.txt"; // Nombre del archivo de texto
+    private String usuarioMySQL = "root", contraseñaMySQL = ""; // usuario y contraseña de MySQL
+
+    private final String msqls = "jdbc:mysql://localhost/" + nombreBaseDatos;
+    private final String odbs = "$objectdb/db/" + nombreBaseDatos + ".odb";
+
     private EntityManagerFactory emf;
     private EntityManager em;
     private JTextField nrf, crf, ppurf, caf, cbf, ceditf, ppueditf, ncf, ulogf, clogf, uregf, cregf;
@@ -20,13 +27,6 @@ public class GestionExistencias
     private JMenuItem ex, hi, ce, tom, tmo, tot, tmt, tto, ttm, empmen;
     private JComboBox<Materiales> naf, nbf, nef, neditf, nof;
     private JFrame ventana, ventanalogin, ventanaRegistrarEliminar;
-
-    String nombreBaseDatos = "GestionExistencias"; // Nombre de la base de datos
-    private final String txtfile="Materiales.txt"; // Nombre del archivo de texto
-    private String usuarioMySQL = "root", contraseñaMySQL = ""; // usuario y contraseña de MySQL
-
-    private final String msqls = "jdbc:mysql://localhost/" + nombreBaseDatos;
-    private final String odbs = "$objectdb/db/" + nombreBaseDatos + ".odb";
 
     public static void main(String args[]) 
     {
@@ -67,17 +67,17 @@ public class GestionExistencias
 
             // Crear la tabla 'Empleados' si no existe
             String createTableQuery = "CREATE TABLE IF NOT EXISTS Empleados (" +
-                                      "usuario VARCHAR(255)," +
-                                      "contraseña VARCHAR(255))";
+                                    "usuario VARCHAR(50) PRIMARY KEY," +
+                                    "contraseña VARCHAR(50) NOT NULL)";
             try (Statement stmt = conexion.createStatement()) {
                 stmt.executeUpdate(createTableQuery);
             }
 
             // Crear la tabla 'Materiales' si no existe
             String createTable = "CREATE TABLE IF NOT EXISTS Materiales (" +
-                                 "nombre VARCHAR(255), " +
-                                 "cantidad INT, " +
-                                 "precioUnidad DOUBLE)";
+                                "nombre VARCHAR(255) PRIMARY KEY, " +
+                                "cantidad INT NOT NULL, " +
+                                "precioUnidad DOUBLE NOT NULL)";
             try (Statement sttmt = conexion.createStatement()) {
                 sttmt.executeUpdate(createTable);
             }
@@ -92,7 +92,7 @@ public class GestionExistencias
                     String insertQuery = "INSERT INTO Empleados VALUES ('admin', 'admin')";
                     try (PreparedStatement insertStmt = conexion.prepareStatement(insertQuery)) {
                         insertStmt.executeUpdate();
-                        System.out.println("Usuario 'admin' insertado en la tabla 'Empleados'.");
+                        System.out.println("Usuario 'admin', Contraseña 'admin', insertado en la tabla 'Empleados'.");
                     }
                 }
             }
@@ -130,7 +130,13 @@ public class GestionExistencias
 
 //---------------------------------------- Ventana login ----------------------------------------
         ventanalogin = new JFrame();
+        ventanalogin.setTitle("Iniciar sesión");
         JPanel loginPanel = new JPanel(null);
+
+        JLabel il = new JLabel(iconoReescalado);
+        il.setBounds(360, 20, 20, 20);
+        loginPanel.add(il);
+        
         ventanalogin.add(new JLabel("Usuario:")).setBounds(40, 20, 100, 25);
         ulogf = new JTextField();
         ulogf.setBounds(150, 20, 200, 25);
@@ -148,7 +154,6 @@ public class GestionExistencias
         loginPanel.add(lbo);
         
         ventanalogin.getContentPane().add(loginPanel);
-        ventanalogin.setTitle("Login");
         ventanalogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventanalogin.setSize(400, 200);
         ventanalogin.setLocationRelativeTo(null);
@@ -157,7 +162,13 @@ public class GestionExistencias
 
 //---------------------------------------- Ventana registrar o eliminar ----------------------------------------
         ventanaRegistrarEliminar = new JFrame();
+        ventanaRegistrarEliminar.setTitle("Registrar o Eliminar Empleados");
         JPanel registroPanel = new JPanel(null);
+
+        JLabel ire = new JLabel(iconoReescalado);
+        ire.setBounds(400, 20, 20, 20);
+        registroPanel.add(ire);
+
         JLabel usuarioLabel = new JLabel("Usuario:");
         usuarioLabel.setBounds(65, 20, 100, 25);
         registroPanel.add(usuarioLabel);
@@ -185,7 +196,6 @@ public class GestionExistencias
         registroPanel.add(ebo);
         
         ventanaRegistrarEliminar.getContentPane().add(registroPanel);
-        ventanaRegistrarEliminar.setTitle("Registrar o Eliminar Empleados");
         ventanaRegistrarEliminar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventanaRegistrarEliminar.setSize(450, 260);
         ventanaRegistrarEliminar.setLocationRelativeTo(null);
@@ -550,6 +560,22 @@ public class GestionExistencias
                 JOptionPane.showMessageDialog(null, "- Aqui aparecen todos los materiales disponibles.\n- Cada vez que se realice un cambio se actualiza inmediatamente.\n- Al cerrar la aplicacion los materiales se guardan automaticamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+        il.addMouseListener(new MouseAdapter() 
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) 
+            {
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre de usuario y la contraseña\ndel empleado que quieras iniciar sesion.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        ire.addMouseListener(new MouseAdapter() 
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) 
+            {
+                JOptionPane.showMessageDialog(null, "- Introduce el nombre de usuario y la contraseña del empleado que\nquieras registrar o el usuario del empleado que quieras eliminar.\n- Cada vez que hagas un cambio se guarda inmediatamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
     }
 
 //---------------------------------------- Metodos extra ----------------------------------------
@@ -692,7 +718,7 @@ public class GestionExistencias
     private void borrarHistorial() 
     {
         // Mostrar ventana de confirmación
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas borrar el historial?", "Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas borrar\nel historial de modificaciones?", "Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Verificar la opción seleccionada por el usuario
         if (opcion == JOptionPane.YES_OPTION) 
         {
@@ -715,7 +741,7 @@ public class GestionExistencias
     private void borrarTodasExistencias() 
     {
         // Crear la ventana de confirmación
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar todos los materiales?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar todos\nlos materiales de la base de datos?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Verificar la opción seleccionada
         if (opcion == JOptionPane.YES_OPTION) 
         {

@@ -18,11 +18,10 @@ public class EliminarManagerObjectDB
     public void eliminarEmpleadoObjectDB() 
     {
         String usuario = uregf.getText();
-        String contraseña = cregf.getText();
 
-        if (usuario.isEmpty() || contraseña.isEmpty()) 
+        if (usuario.isEmpty()) 
         {
-            JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Por favor, ingresa el usuario a eliminar", "Campo vacío", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
