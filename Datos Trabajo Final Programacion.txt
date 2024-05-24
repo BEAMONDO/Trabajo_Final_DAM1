@@ -23,7 +23,7 @@ HORAS
 
 TOTAL 56h
 
-2500 lineas, 21 archivos
+2358 lineas, 21 archivos
 
 
 
