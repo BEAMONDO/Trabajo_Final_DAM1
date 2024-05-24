@@ -842,25 +842,6 @@ public class GestionExistencias
         }
     }
 
-//---------------------------------------- Metodo y menu transferir materiales de MySQL a TXT ----------------------------------------
-    private void manejadorTransMySQLtoTXT()
-    {
-        TransMySQLtoTXT transMySQLtoTXT = new TransMySQLtoTXT(msqls, usuarioMySQL, contraseñaMySQL, txtfile);
-        transMySQLtoTXT.transferirMaterialesMySQLtoTXT();
-    }
-
-    class TransferirMaterialesMySQLtoTXTMenu implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e) 
-        {
-            if(e.getSource() instanceof JMenuItem) 
-            {
-                manejadorTransMySQLtoTXT();
-            }
-            
-        }
-    }
-
 //---------------------------------------- Metodo y menu transferir materiales de TXT a ObjectDB ----------------------------------------
     private void manejadorTransTXTtoObjectDB()
     {
@@ -875,6 +856,25 @@ public class GestionExistencias
             if(e.getSource() instanceof JMenuItem) 
             {
                 manejadorTransTXTtoObjectDB();
+            }
+            
+        }
+    }
+
+//---------------------------------------- Metodo y menu transferir materiales de MySQL a TXT ----------------------------------------
+    private void manejadorTransMySQLtoTXT()
+    {
+        TransMySQLtoTXT transMySQLtoTXT = new TransMySQLtoTXT(msqls, usuarioMySQL, contraseñaMySQL, txtfile);
+        transMySQLtoTXT.transferirMaterialesMySQLtoTXT();
+    }
+
+    class TransferirMaterialesMySQLtoTXTMenu implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
+            if(e.getSource() instanceof JMenuItem) 
+            {
+                manejadorTransMySQLtoTXT();
             }
             
         }
