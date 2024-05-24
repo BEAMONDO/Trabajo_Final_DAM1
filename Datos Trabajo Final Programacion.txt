@@ -23,7 +23,8 @@ HORAS
 
 TOTAL 56h
 
-2500 lineas, 21 archivos
+2358 lineas, 21 archivos
+
 
 
 
@@ -57,12 +58,10 @@ ebm: eliminarbobjectdb
 
 hmf: historialmodificacionfuncion
 etf: existenciastotalesfuncion
-tetf
 
 ex: existencias
 hi: historial
 ce: cerrar
-
 tom: transferirobjectdbmysql
 tmo: transferirmysqlobjectdb
 tot: transferirobjectdbtxt
@@ -79,28 +78,15 @@ nof: nombreoriginalfield
 
 
 
+
 IMAGENES
 ir: infoRegistrar
 ia: infoAnnadir
-ie: infoEditar
-ib: infoBorrar
 iedit: infoEliminar
+ib: infoBorrar
+ie: infoEditar
 im: infoModificar
 ihm: infoHistorialModificaciones
 ied: infoExistenciasDisponibles
-
-
-
-FUNCIONES
-txt - mysql
-mysql - txt
-mysql - objectdb
-
-txt - objectdb
-objectdb - txt
-objectdb - mysql
-
-login mysql
-login objectdb
-registrar mysql
-registrar objectdb
+il: infologin
+ire: inforegistrareliminar
